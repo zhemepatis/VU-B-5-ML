@@ -21,3 +21,4 @@ sample_2 <- sample_2[rowSums(is.na(sample_2)) != ncol(sample_2),]
 sample_2 <- sample_2[sample(1:nrow(sample_2), 1000),]
 
 ekg_data <- rbind(sample_0, sample_1, sample_2)
+
