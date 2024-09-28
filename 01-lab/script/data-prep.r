@@ -37,6 +37,10 @@ for (i in 1:length(unfillable_cols)) {
 
 # atrenkame 9 pozymius
 ekg_data <- ekg_data[, c("RR_l_0", "seq_size", "signal_mean", "signal_std", "R_val", "T_val", "R_pos", "T_pos", "label")]
+sample_0 <- sample_0[, c("RR_l_0", "seq_size", "signal_mean", "signal_std", "R_val", "T_val", "R_pos", "T_pos", "label")]
+sample_1 <- sample_1[, c("RR_l_0", "seq_size", "signal_mean", "signal_std", "R_val", "T_val", "R_pos", "T_pos", "label")]
+sample_2 <- sample_2[, c("RR_l_0", "seq_size", "signal_mean", "signal_std", "R_val", "T_val", "R_pos", "T_pos", "label")]
+
 
 # patikrinam, ar yra eiluciu su tusciom reiksmem
 any(!complete.cases(ekg_data))
