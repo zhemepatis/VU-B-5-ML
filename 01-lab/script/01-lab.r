@@ -1,40 +1,40 @@
-setwd("/home/rink/repos/UNI-B-5-ML")
-ekg_data <- read.csv("ecg-data.csv", sep = ";", header = TRUE, na.strings=c(""))
+# setwd("/home/rink/repos/UNI-B-5-ML")
+# ekg_data <- read.csv("ecg-data.csv", sep = ";", header = TRUE, na.strings=c(""))
 
-# converting from char to num
-ekg_data$RR_r_0 <- as.numeric(as.character(ekg_data$RR_r_0))
-ekg_data$RR_r_0.RR_r_1 <- as.numeric(as.character(ekg_data$RR_r_0.RR_r_1))
-summary(ekg_data)
+# # converting from char to num
+# ekg_data$RR_r_0 <- as.numeric(as.character(ekg_data$RR_r_0))
+# ekg_data$RR_r_0.RR_r_1 <- as.numeric(as.character(ekg_data$RR_r_0.RR_r_1))
+# summary(ekg_data)
 
-set.seed(222)  # To make sampling reproducible
+# set.seed(222)  # To make sampling reproducible
 
-sample_0 <- ekg_data[ekg_data$label == 0.0,]
-sample_0 <- sample_0[rowSums(is.na(sample_0)) != ncol(sample_0),]
-sample_0 <- sample_0[sample(1:nrow(sample_0), 1000),]
+# sample_0 <- ekg_data[ekg_data$label == 0.0,]
+# sample_0 <- sample_0[rowSums(is.na(sample_0)) != ncol(sample_0),]
+# sample_0 <- sample_0[sample(1:nrow(sample_0), 1000),]
 
-sample_1 <- ekg_data[ekg_data$label == 1.0,]
-sample_1 <- sample_1[rowSums(is.na(sample_1)) != ncol(sample_1),]
-sample_1 <- sample_1[sample(1:nrow(sample_1), 1000),]
+# sample_1 <- ekg_data[ekg_data$label == 1.0,]
+# sample_1 <- sample_1[rowSums(is.na(sample_1)) != ncol(sample_1),]
+# sample_1 <- sample_1[sample(1:nrow(sample_1), 1000),]
 
-sample_2 <- ekg_data[ekg_data$label == 2.0,]
-sample_2 <- sample_2[rowSums(is.na(sample_2)) != ncol(sample_2),]
-sample_2 <- sample_2[sample(1:nrow(sample_2), 1000),]
+# sample_2 <- ekg_data[ekg_data$label == 2.0,]
+# sample_2 <- sample_2[rowSums(is.na(sample_2)) != ncol(sample_2),]
+# sample_2 <- sample_2[sample(1:nrow(sample_2), 1000),]
 
 # Calculating min, max, quantiles, median, mean, NA values
-summary(sample_0)
-summary(sample_1)
-summary(sample_2)
+# summary(sample_0)
+# summary(sample_1)
+# summary(sample_2)
 
 # Sujungiam duomenis i viena kruva
-ekg_data <- rbind(sample_0, sample_1, sample_2)
+# ekg_data <- rbind(sample_0, sample_1, sample_2)
 
-# Funkcija uzpildanti santykius
-fill_in_missing_ratio <- function(sample_data, missing_column, counter_column, denominator_column) {
-  sample_data[[missing_column]] <- ifelse(is.na(sample_data[[missing_column]]), 
-                                          sample_data[[counter_column]] / sample_data[[denominator_column]], 
-                                          sample_data[[missing_column]])
-  return(sample_data)
-}
+# # Funkcija uzpildanti santykius
+# fill_in_missing_ratio <- function(sample_data, missing_column, counter_column, denominator_column) {
+#   sample_data[[missing_column]] <- ifelse(is.na(sample_data[[missing_column]]), 
+#                                           sample_data[[counter_column]] / sample_data[[denominator_column]], 
+#                                           sample_data[[missing_column]])
+#   return(sample_data)
+# }
 
 # Uzpildom RR_l_x / RR_l_x+1
 ekg_data <- fill_in_missing_ratio(ekg_data, "RR_l_0.RR_l_1", "RR_l_0", "RR_l_1")
@@ -92,22 +92,22 @@ any(is.na(ekg_data$RR_r_2))
 any(is.na(ekg_data$RR_r_3)) 
 
 # Funkcija uzpildanti praleista reiksme naudojant sudeti
-fill_in_missing_values_with_sum <- function(sample_data, missing_column, sum_column1, sum_column2) {
-  sample_data[[missing_column]] <- ifelse(is.na(sample_data[[missing_column]]), 
-                                           sample_data[[sum_column1]] + sample_data[[sum_column2]], 
-                                           sample_data[[missing_column]])
+# fill_in_missing_values_with_sum <- function(sample_data, missing_column, sum_column1, sum_column2) {
+#   sample_data[[missing_column]] <- ifelse(is.na(sample_data[[missing_column]]), 
+#                                            sample_data[[sum_column1]] + sample_data[[sum_column2]], 
+#                                            sample_data[[missing_column]])
   
-  return(sample_data)
-}
+#   return(sample_data)
+# }
 
 # Funkcija uzpildanti praleista reiksme naudojant atimti
-fill_in_missing_values_with_difference <- function(sample_data, missing_column, diff_column1, diff_column2) {
-  sample_data[[missing_column]] <- ifelse(is.na(sample_data[[missing_column]]), 
-                                          sample_data[[diff_column1]] - sample_data[[diff_column2]], 
-                                          sample_data[[missing_column]])
+# fill_in_missing_values_with_difference <- function(sample_data, missing_column, diff_column1, diff_column2) {
+#   sample_data[[missing_column]] <- ifelse(is.na(sample_data[[missing_column]]), 
+#                                           sample_data[[diff_column1]] - sample_data[[diff_column2]], 
+#                                           sample_data[[missing_column]])
   
-  return(sample_data)
-}
+#   return(sample_data)
+# }
 
 # Uzpildom seq_size, wl_side, wr_side
 ekg_data <- fill_in_missing_values_with_sum(ekg_data, "seq_size", "wl_side", "wr_side")
@@ -147,18 +147,18 @@ calculate_mean <- function(sample_data, col_name) {
 }
 
 # Funkcija uzpildanti praleistas reiksmes pozymiam, kuriu negalima buvo apskaiciuoti kitaip
-fill_in_missing_values <- function(sample_data, col_name) {
-  test_result <- shapiro.test(sample_data[[col_name]])
+# fill_in_missing_values <- function(sample_data, col_name) {
+#   test_result <- shapiro.test(sample_data[[col_name]])
 
-  if (test_result$p.value < 0.05) {
-    sample_data <- calculate_median(sample_data, col_name)
-  }
-  else {
-    sample_data <- calculate_mean(sample_data, col_name)
-  }
+#   if (test_result$p.value < 0.05) {
+#     sample_data <- calculate_median(sample_data, col_name)
+#   }
+#   else {
+#     sample_data <- calculate_mean(sample_data, col_name)
+#   }
 
-  return(sample_data)
-}
+#   return(sample_data)
+# }
 
 # Uzpildom RR_l_3 / RR_l_4
 sample_0 <- fill_in_missing_values(sample_0, "RR_l_3.RR_l_4")
