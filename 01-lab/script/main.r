@@ -1,4 +1,3 @@
-setwd("/home/rink/repos/UNI-B-5-ML/01-lab")
 ekg_data <- read.csv("data/ecg-data.csv", sep = ";", header = TRUE, na.strings=c(""))
 
 # patikrinam duomenu tipus ir konvertuojam juos
