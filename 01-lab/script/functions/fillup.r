@@ -23,9 +23,4 @@ delete_if_target_empty <- function(data, target_col) {
   return(data)
 }
 
-has_empty_values <- function(data, target_col) {
-  has_empty = any(is.na(data[[target_col]]))
-  return(has_empty)
-}
-
 
