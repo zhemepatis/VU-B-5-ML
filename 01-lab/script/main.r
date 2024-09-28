@@ -6,6 +6,9 @@ str(ekg_data)
 ekg_data$RR_r_0 <- as.numeric(as.character(ekg_data$RR_r_0))
 ekg_data$RR_r_0.RR_r_1 <- as.numeric(as.character(ekg_data$RR_r_0.RR_r_1))
 
+# atrenkame 9 pozymius
+ekg_data <- ekg_data[, c("RR_l_0", "seq_size", "signal_mean", "signal_std", "R_val", "T_val", "R_pos", "T_pos", "label")]
+
 # atsitiktinai pasirenkam duomenis
 set.seed(222)
 
