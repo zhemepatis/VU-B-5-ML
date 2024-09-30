@@ -15,7 +15,7 @@ count_outliers <- function(x) {
 # Išskirčių apribojimo funkcija
 cap_outliers <- function(x) {
   qnt <- quantile(x, probs = c(.25, .75), na.rm = TRUE)
-  caps <- quantile(x, probs = c(.05, .95 ), na.rm = TRUE)
+  caps <- quantile(x, probs = c(.05, .95 ), na.rm = TRUE) # reikia paklaust del procentiliu
   H <- 1.5 * IQR(x, na.rm = TRUE)
   
   x[x < (qnt[1] - H)] <- caps[1]
@@ -24,8 +24,6 @@ cap_outliers <- function(x) {
   return(x)
 }
 
-par(mfrow = c(1, 1))  
-boxplot(ekg_data, horizontal = TRUE)
 
 # Grafikų pateikimo laukas padalinamas į dvi dalis
 par(mfrow = c(1, 2), oma = c(0, 0, 4, 0))
@@ -76,7 +74,7 @@ for (col in names(ekg_data)) {
                 "V(2)")
     )
     
-    mtext(paste("Išskirčių apribojimas:", col),
+    mtext(paste("Stačiakampė diagrama požymio:", col),
           side = 3,
           line = 1.5,
           outer = TRUE,
@@ -86,27 +84,13 @@ for (col in names(ekg_data)) {
 }
 
 # Grafikų pateikimo laukas atstatomas
-par(mfrow = c(1, 1))  
-
-boxplot(ekg_data, horizontal = TRUE)
+par(mfrow = c(1, 1), oma = c(0, 0, 0, 0))
 
 
 # Atstatoma objektu seka
 rownames(ekg_data) <- 1:nrow(ekg_data)
 
 # Statistiniai imties duomenys
-subset_0 <- ekg_data[ekg_data$label == 0,]
-subset_1 <- ekg_data[ekg_data$label == 1,]
-subset_2 <- ekg_data[ekg_data$label == 2,]
-
-cat("Imties: ")
-summary(ekg_data)
-
-cat("Label 0: ")
-summary(subset_0)
-
-cat("Label 1: ")
-summary(subset_1)
-
-cat("Label 2: ")
-summary(subset_2)
+sample_0 <- ekg_data[ekg_data$label == 0,]
+sample_1 <- ekg_data[ekg_data$label == 1,]
+sample_2 <- ekg_data[ekg_data$label == 2,]
