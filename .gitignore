@@ -2,6 +2,8 @@
 .Rhistory
 .RData
 .Ruserdata
+
+01-lab/output/*.csv
 01-lab/summary_0_table.csv
 01-lab/summary_1_table.csv
 01-lab/summary_2_table.csv
