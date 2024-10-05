@@ -15,11 +15,11 @@ count_outliers <- function(x) {
 # Išskirčių apribojimo funkcija (tik ekstremalioms)
 cap_extreme_outliers <- function(x) {
   qnt <- quantile(x, probs = c(.25, .75), na.rm = TRUE)
-  extreme_H <- 3 * IQR(x, na.rm = TRUE)
   caps <- quantile(x, probs = c(.01, .99), na.rm = TRUE)
+  extreme_H <- 3 * IQR(x, na.rm = TRUE)
   
-  x[x < (qnt[1] - extreme_H)] <- caps[1]
-  x[x > (qnt[2] + extreme_H)] <- caps[2]
+  x[x < (qnt[1] - extreme_H) & x < caps[1]] <- caps[1]
+  x[x > (qnt[2] + extreme_H) & x > caps[2]] <- caps[2]
   
   return(x)
 }
