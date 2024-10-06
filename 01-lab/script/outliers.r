@@ -146,8 +146,11 @@ rownames(ekg_data) <- 1:nrow(ekg_data)
 # Išvedama lentelė su išskirčių informacija
 cat("Išskirčių suvestinė prieš:\n")
 print(outlier_summary_before)
+write.csv(outlier_summary_before, "output/outlier_summary_before.csv")
+
 cat("Išskirčių suvestinė po:\n")
 print(outlier_summary_after)
+write.csv(outlier_summary_after, "output/outlier_summary_after.csv")
 
 # Statistiniai imties duomenys
 sample_0 <- ekg_data[ekg_data$label == 0,]
