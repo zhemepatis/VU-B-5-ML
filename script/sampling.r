@@ -1,9 +1,9 @@
 sample_by_label <- function(data, label, size) {
-    result <- data[data$label == label, ]
-    result <- result[rowSums(is.na(result)) != ncol(result), ]
-    result <- result[sample(seq_len(nrow(result)), size), ]
+  result <- data[data$label == label, ]
+  result <- result[rowSums(is.na(result)) != ncol(result), ]
+  result <- result[sample(seq_len(nrow(result)), size), ]
 
-    return(result)
+  return(result)
 }
 
 set.seed(1000)
