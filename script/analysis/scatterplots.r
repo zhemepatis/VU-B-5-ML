@@ -6,7 +6,7 @@ for (i in 1:(length(target_cols) - 1)) {
   for (j in (i + 1):length(target_cols)) {
     col_x <- target_cols[i]
     col_y <- target_cols[j]
-
+    
     plot <- ggplot(data = ekg_data, aes_string(x = col_x, y = col_y, colour = "factor(label)")) +
       geom_point() +
       geom_smooth(method = "lm", se = FALSE, aes(group = 1)) +
@@ -20,7 +20,7 @@ for (i in 1:(length(target_cols) - 1)) {
         axis.title.y = element_text(size = 14),
         axis.text.y = element_text(size = 12)
       )
-
+    
     print(plot)
   }
 }
