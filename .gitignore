@@ -2,10 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
+.DS_Store
 
-01-lab/output/*.csv
-01-lab/summary_0_table.csv
-01-lab/summary_1_table.csv
-01-lab/summary_2_table.csv
-01-lab/summary_binded_table.csv
-01-lab/.DS_Store
+output/
