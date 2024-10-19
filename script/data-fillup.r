@@ -23,8 +23,18 @@ delete_if_target_empty <- function(data, target_col) {
   return(data)
 }
 
+# uzpildom neegzistuojancias reiksmes isvestinem formulem
 ekg_data <- multiply_if_target_empty(ekg_data, "RR_l_0", "RR_l_0.RR_l_1", "RR_l_1")
 ekg_data <- sum_if_target_empty(ekg_data, "seq_size", "wl_side", "wr_side")
+
+# istrinam eilutes, kuriose yra neegzistuojanciu reiksmiu,
+# kuriu negalima uzpildyti formulem
+target_cols <- c("signal_mean", "signal_std", "R_val", "T_val", "R_pos", "T_pos", "label")
+col_num <- length(target_cols)
+for (i in seq_len(col_num)) {
+  curr_col <- target_cols[i]
+  ekg_data <- delete_if_target_empty(ekg_data, curr_col)
+}
 
 # istrinam resursus, kuriu nebenaudosim
 rm(sum_if_target_empty)
