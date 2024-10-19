@@ -31,8 +31,8 @@ ekg_data <- sum_if_target_empty(ekg_data, "seq_size", "wl_side", "wr_side")
 # kuriu negalima uzpildyti formulem
 target_cols <- c("signal_mean", "signal_std", "R_val", "T_val", "R_pos", "T_pos", "label")
 col_num <- length(target_cols)
-for (i in seq_len(col_num)) {
-  curr_col <- target_cols[i]
+for (idx in seq_len(col_num)) {
+  curr_col <- target_cols[idx]
   ekg_data <- delete_if_target_empty(ekg_data, curr_col)
 }
 
@@ -40,3 +40,8 @@ for (i in seq_len(col_num)) {
 rm(sum_if_target_empty)
 rm(multiply_if_target_empty)
 rm(delete_if_target_empty)
+
+rm(idx)
+rm(col_num)
+rm(target_cols)
+rm(curr_col)
