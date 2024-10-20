@@ -5,4 +5,3 @@ ekg_data <-
 source("script/data-preparation/type-conversion.r")
 source("script/data-preparation/sampling.r")
 source("script/data-preparation/data-fillup.r")
-source("script/data-preparation/feature-selection.r")
