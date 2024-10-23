@@ -29,7 +29,7 @@ print("Visos duomenų aibės aprasomoji statistika")
 print(summary(ekg_data))
 
 # surasom aprasomiasas statistikas i .csv failus
-target_cols <- c("RR_l_0", "seq_size", "signal_mean", "signal_std", "R_val", "T_val", "R_pos", "T_pos", "label")
+target_cols <- colnames(ekg_data)
 
 sample_0_summary <- get_summary_table(sample_0, target_cols)
 sample_1_summary <- get_summary_table(sample_1, target_cols)
