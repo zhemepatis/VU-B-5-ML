@@ -3,5 +3,5 @@ ekg_data <-
 
 # data preparation
 source("script/data-preparation/type-conversion.r")
-source("script/data-preparation/sampling.r")
 source("script/data-preparation/data-fillup.r")
+source("script/data-preparation/sampling.r")
