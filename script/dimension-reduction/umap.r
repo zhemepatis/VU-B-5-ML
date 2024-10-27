@@ -2,6 +2,7 @@ library(uwot)
 library(ggplot2)
 library(ggrepel)
 
+
 # Min-max normavimo funkcija
 min_max_normalize <- function(x) { 
   return((x - min(x)) / (max(x) - min(x))) 
