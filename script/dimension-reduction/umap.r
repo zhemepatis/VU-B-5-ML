@@ -72,7 +72,7 @@ plot_umap <- function(data, title) {
 
 # Duomenų aibės
 datasets <- list(
-  "nenormuota visų požymių duomenų aibės" = ekg_data_umap,
+  "nenormuota visų požymių duomenų aibė" = ekg_data_umap,
   "normuota visų požymių duomenų aibė" = ekg_data_umap_minmax,
   "normuota atrinktų požymių duomenų aibė" = ekg_data_umap_minmax[, c("signal_mean", "signal_std", "R_val", "Q_pos", "Q_val", "T_pos", "label")]
 )
