@@ -20,14 +20,10 @@ for (col in columns_to_normalize) {
 
 # UMAP parametrai
 set.seed(1000)
-n_param <- 15
-d_param <- 0.1
-s_param <- 1
+n_param <- 35
+d_param <- 0.02
+s_param <- 1.25
 m_param <- 'euclidean'
-
-# Default parametrai - n=15, d=0.1, s=1, m=euclidean
-# Geriausi parametrai visai - n=35, d=0.02, s=1.25, m=euclidean
-# Geriausi parametrai poaibiui - n=40, d=0.0001, s=1.25, m=euclidean
 
 # Funkcija apskaičiuoti UMAP ir pateikti grafiką
 plot_umap <- function(data, title) {
