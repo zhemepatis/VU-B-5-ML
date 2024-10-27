@@ -12,10 +12,20 @@ features <- ekg_data_minmax[target_cols]
 labels <- ekg_data[, 32] # paimam klases stulpeli
 
 # pritaikom t-SNE metoda
-perplexity <- 40
-max_iter <- 1000
-exaggeration_factor <- 20
-tsne_result <- Rtsne(features, normalize_input = FALSE, perplexity = perplexity, max_iter = max_iter, exaggeration_factor = exaggeration_factor)
+perplexity <- 40 # default 30
+pca_init <- TRUE # default TRUE
+max_iter <- 1000 # default 1000
+eta <- 400
+exaggeration_factor <- 20 # default 12
+
+tsne_result <- Rtsne(
+  features,
+  perplexity = perplexity,
+  pca = pca_init,
+  max_iter = max_iter,
+  eta = eta,
+  exaggeration_factor = exaggeration_factor
+)
 
 # issaugom tasku koordinates
 tsne_coords <- tsne_result$Y
@@ -24,7 +34,6 @@ colnames(tsne_coords) <- c("dim_1", "dim_2")
 # pridedam klases prie duomenu
 tsne_df <- data.frame(tsne_coords, Label = as.factor(labels))
 max_range <- max(abs(range(tsne_df$dim_1)), abs(range(tsne_df$dim_2)))
-
 
 # braizom grafika
 ggplot(tsne_df, aes(x = dim_1, y = dim_2, color = Label)) +
@@ -35,18 +44,3 @@ ggplot(tsne_df, aes(x = dim_1, y = dim_2, color = Label)) +
   scale_x_continuous(limits = c(-max_range, max_range)) +
   scale_y_continuous(limits = c(-max_range, max_range)) +
   coord_equal()
-
-
-# isankstines isvados
-
-# didinant max_iter matosi, kad taskiukai spaudzias biskiuka viens prie kito
-# taciau kazkokiu labai dideliu pokyciu nepastebima
-# galima palikti 1000, kad algoritmas greiciau veiktu
-
-# didinant perplexity akivaizdziai matosi skirtumas
-# taskiukai kiek labiau susispaude, aiskiau matosi skirtingos klasiu sritys
-# taciau vis tiek yra kazkokiu persypinimu
-# nlb aisku kuris yra geriausias
-
-# didinant exaggeration factor, matom, kad vienos klases debeseliai arteja vienas prie kito
-# esant per dideliam EF, matom, kad debeseliai vel atsiskyre
