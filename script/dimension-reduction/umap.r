@@ -2,79 +2,85 @@ library(uwot)
 library(ggplot2)
 library(ggrepel)
 
+# Min-max normavimo funkcija
 min_max_normalize <- function(x) { 
   return((x - min(x)) / (max(x) - min(x))) 
 }
 
-ekg_data_minmax <- ekg_data
-columns_to_normalize <- setdiff(names(ekg_data), 'label')
+# Duomenu paruošimas, siekiant nepakeisti darbinės duomenų aibės
+ekg_data_umap <- ekg_data
 
+# Normuotos duomenų aibės kūrimas
+ekg_data_umap_minmax <- ekg_data_umap
+columns_to_normalize <- setdiff(names(ekg_data_umap), 'label')
 for (col in columns_to_normalize) { 
-  ekg_data_minmax[[col]] <- min_max_normalize(ekg_data_minmax[[col]]) 
+  ekg_data_umap_minmax[[col]] <- min_max_normalize(ekg_data_umap_minmax[[col]]) 
 }
 
+# UMAP parametrai
+set.seed(1000)
+n_param <- 15
+d_param <- 0.1
+s_param <- 1
+m_param <- 'euclidean'
 
-# n_neighbors – parametras kuris nurodo globalios ir lokalios struktūros balansą.
-# Kuo mažesnis parametras, tuo labiau algoritmas skirs dėmesį lokaliai struktūrai
-# ir kuo didesnis tuo labiau atsižvelgs į globalią struktūrą.
+# Default parametrai - n=15, d=0.1, s=1, m=euclidean
+# Geriausi parametrai visai - n=35, d=0.02, s=1.25, m=euclidean
+# Geriausi parametrai poaibiui - n=40, d=0.0001, s=1.25, m=euclidean
 
-# min_dist - parametras kuris nusako koks yra minimalus atstumas
-# kuriuo bus atpažįstami taškai “kaimynai”. Šis parametras nusako kaip tankiai 
-# sumažintos dimensijos taškai atsispindės projekcijoje
+# Funkcija apskaičiuoti UMAP ir pateikti grafiką
+plot_umap <- function(data, title) {
+  umap_result <- umap(
+    data[, -which(names(data) == "label")], 
+    n_neighbors = n_param, 
+    min_dist = d_param, 
+    spread = s_param,
+    metric = m_param
+  )
+  
+  umap_df <- data.frame(
+    UMAP1 = umap_result[, 1],
+    UMAP2 = umap_result[, 2],
+    label = data$label
+  )
+  
+  max_range <- max(abs(range(umap_df$UMAP1)), abs(range(umap_df$UMAP2)))
+  
+  ggplot(umap_df, aes(
+    x = UMAP1, y = UMAP2, 
+    col = as.factor(label)
+  )) +
+    geom_point() +
+    scale_color_manual(values = c("0" = "red", "1" = "green", "2" = "blue")) +
+    theme_minimal() +
+    labs(
+      color = "Klasė",
+      title = title,
+      x = "UMAP1",
+      y = "UMAP2",
+      caption = paste("UMAP parametrai: n_neighbours =", n_param, "; min_dist =", d_param, "; spread =", s_param, "; metric =", m_param)
+    ) +
+    theme(
+      plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+      axis.title = element_text(size = 14),
+      axis.text = element_text(size = 12),
+      legend.title = element_text(size = 12),
+      legend.text = element_text(size = 12),
+      plot.caption = element_text(size = 10, hjust = 0.5)
+    ) +
+    scale_x_continuous(limits = c(-max_range, max_range)) +
+    scale_y_continuous(limits = c(-max_range, max_range)) +
+    coord_equal()
+}
 
-# spread - pasiskirstymas, isbalansuojama min_dist detaliau pateikiami klasteriai
-
-# metric - naudojama atstumo skaiciavimui
-#geriausi correlation arba euclidean
-
-# geriausi n20s3 arba n5s1
-
-umap_ekg <- umap(ekg_data[, -which(names(ekg_data) == "label")], 
-                 n_neighbors = 20, 
-                 min_dist = 0.1, 
-                 spread = 3,
-                 metric = 'euclidean')
-
-umap_ekg <- data.frame(
-  UMAP1 = umap_ekg[, 1],
-  UMAP2 = umap_ekg[, 2],
-  label = ekg_data$label
+# Duomenų aibės
+datasets <- list(
+  "nenormuota visų požymių duomenų aibės" = ekg_data_umap,
+  "normuota visų požymių duomenų aibė" = ekg_data_umap_minmax,
+  "normuota atrinktų požymių duomenų aibė" = ekg_data_umap_minmax[, c("signal_mean", "signal_std", "R_val", "Q_pos", "Q_val", "T_pos", "label")]
 )
 
-ggplot(umap_ekg, aes(
-  x = UMAP1, y = UMAP2, 
-  col = as.factor(label))) +
-  geom_point() +
-  ggrepel::geom_text_repel(aes(label = label), size = 2.5) +
-  scale_color_manual(values = c("0" = "red", "1" = "green", "2" = "blue")) +
-  theme_minimal() +
-  labs(color = "Klasė", 
-       title = "EKG nenormuotos aibės UMAP vizualizacija", 
-       x = "UMAP1", 
-       y = "UMAP2")
-
-###
-
-umap_ekg <- umap(ekg_data_minmax[, -which(names(ekg_data_minmax) == "label")], 
-                 n_neighbors = 20, 
-                 min_dist = 0.1, 
-                 spread = 3,
-                 metric = 'euclidean')
-
-umap_ekg <- data.frame(
-  UMAP1 = umap_ekg[, 1],
-  UMAP2 = umap_ekg[, 2],
-  label = ekg_data$label
-)
-
-ggplot(umap_ekg, aes(
-  x = UMAP1, y = UMAP2, 
-  col = as.factor(label))) +
-  geom_point() +
-  ggrepel::geom_text_repel(aes(label = label), size = 2.5) +
-  scale_color_manual(values = c("0" = "red", "1" = "green", "2" = "blue")) +
-  theme_minimal() +
-  labs(color = "Klasė", 
-       title = "EKG normuotos aibės UMAP vizualizacija", 
-       x = "UMAP1", 
-       y = "UMAP2")
+# Pateikiamas taškinis grafikas kiekvienos duomenų aibės
+for (name in names(datasets)) {
+  print(plot_umap(datasets[[name]], paste("UMAP vizualizacija:", name)))
+}
