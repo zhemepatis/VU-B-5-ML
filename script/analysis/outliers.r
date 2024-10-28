@@ -1,3 +1,18 @@
+# Išskirčių skaičiavimo funkcija
+count_outliers <- function(x) {
+  qnt <- quantile(x, probs = c(.25, .75), na.rm = TRUE)
+  mild_H <- 1.5 * IQR(x, na.rm = TRUE)
+  extreme_H <- 3 * IQR(x, na.rm = TRUE)
+  
+  mild_outliers <- sum((x < (qnt[1] - mild_H) & x >= (qnt[1] - extreme_H)) |
+                         (x > (qnt[2] + mild_H) & x <= (qnt[2] + extreme_H)))
+  
+  extreme_outliers <- sum(x < (qnt[1] - extreme_H) | x > (qnt[2] + extreme_H))
+  
+  return(list(mild = mild_outliers, extreme = extreme_outliers))
+}
+
+# Išskirčių šalinimo funkcija
 is_extreme_outlier <- function(x) {
   qnt <- quantile(x, probs = c(.25, .75), na.rm = TRUE)
   extreme_H <- 3 * IQR(x, na.rm = TRUE)
