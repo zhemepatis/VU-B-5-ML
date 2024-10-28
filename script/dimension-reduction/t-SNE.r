@@ -12,11 +12,11 @@ features <- ekg_data_minmax[target_cols]
 labels <- ekg_data[, 32] # paimam klases stulpeli
 
 # pritaikom t-SNE metoda
-perplexity <- 40 # default 30
+perplexity <- 30 # default 30
 pca_init <- TRUE # default TRUE
 max_iter <- 1000 # default 1000
-eta <- 400
-exaggeration_factor <- 20 # default 12
+eta <- 400 
+exaggeration_factor <- 12 # default 12
 
 tsne_result <- Rtsne(
   features,
