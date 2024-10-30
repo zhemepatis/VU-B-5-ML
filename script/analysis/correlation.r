@@ -18,14 +18,13 @@ get_correlation_data <- function(data, target_cols, target_attr) {
 library(corrplot)
 
 target_cols <- c("RR_l_0", "seq_size",  "signal_mean", "signal_std", "R_val", "T_val", "R_pos", "T_pos", "label")
-target_cols <- colnames(ekg_data)
 
 # gaunam koreliacijos koeficientus ir p reiksmes
 corr_coef_table <- get_correlation_data(ekg_data, target_cols, "estimate")
 p_value_table <- get_correlation_data(ekg_data, target_cols, "p.value")
 
 # braizom koreliacijos grafika
-corrplot(corr_coef_table, method = "circle", type = "lower")
+corrplot(corr_coef_table, method = "circle", type = "lower", addCoef.col = "black")
 
 # spausdinam koreliacijos koeficientu lentele bei p reiksmiu lentele
 write.csv(corr_coef_table, "output/corr_coef_table.csv")
