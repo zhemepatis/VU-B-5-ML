@@ -35,7 +35,7 @@ apply_and_plot_t_sne <- function (data, parameters, label_col, title) {
            "Parametrai: distance metric = ", "euclidean", 
            ", perplexity = ", perplexity, 
            ", PCA initialisation = ", pca_init,
-           ", number of iterations = ", max_iter,
+           ", \n\n number of iterations = ", max_iter,
            ", exaggeration factor = ", exaggeration_factor,
            ", learning rate = ", eta
          )
@@ -44,11 +44,11 @@ apply_and_plot_t_sne <- function (data, parameters, label_col, title) {
     scale_y_continuous(limits = c(-max_range, max_range)) +
     coord_equal() +
     theme(
-      plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+      plot.title = element_text(hjust = 0.5, face = "bold", size = 18),
       plot.caption = element_text(hjust = 0.5, size = 12),
-      legend.title = element_text(size = 14),
-      legend.text = element_text(size = 14),
-      axis.title = element_text(size = 14),
+      legend.title = element_text(size = 16),
+      legend.text = element_text(size = 16),
+      axis.title = element_text(size = 16)
     )
 }
 
@@ -63,7 +63,7 @@ source("script/data-preparation/norm.r")
 # atskiriam klasiu stulpeli
 labels <- ekg_data[, 32]
 
-# pritaikom t-SNE metoda nenormuotai visu pozymiu duomenu aibei
+# # pritaikom t-SNE metoda nenormuotai visu pozymiu duomenu aibei
 no_target_features <- ekg_data[, -32]
 
 perplexity <- 30
@@ -75,12 +75,12 @@ normalize <- FALSE
 params <- list(perplexity, pca_init, max_iter, eta, exaggeration_factor)
 apply_and_plot_t_sne(
   no_target_features,
-  params, 
+  params,
   labels,
   "t-SNE vizualizacija nenormuotai visų požymių duomenų aibei"
 )
 
-# pritaikom t-SNE metoda normuotai visu pozymiu duomenu aibei
+# pritaikom t-SNE metoda normuotai visu pozymiu duomenu aibei (defaultiniai požymiai)
 no_target_features_normalised <- ekg_data_minmax[, -32]
 
 perplexity <- 30
@@ -92,16 +92,60 @@ normalize <- TRUE
 params <- list(perplexity, pca_init, max_iter, eta, exaggeration_factor)
 apply_and_plot_t_sne(
   no_target_features_normalised,
-  params, 
+  params,
   labels,
   "t-SNE vizualizacija normuotai visų požymių duomenų aibei"
 )
 
+# pritaikom t-SNE metoda normuotai visu pozymiu duomenu aibei (geriausi požymiai)
+no_target_features_normalised <- ekg_data_minmax[, -32]
+
+perplexity <- 40
+pca_init <- TRUE
+max_iter <- 1500
+eta <- 250
+exaggeration_factor <- 10
+normalize <- TRUE
+params <- list(perplexity, pca_init, max_iter, eta, exaggeration_factor)
+apply_and_plot_t_sne(
+  no_target_features_normalised,
+  params,
+  labels,
+  "t-SNE vizualizacija visų požymių duomenų aibei su pakeistais hiperparametrais"
+)
 
 # pritaikom t-SNE metoda normuotai atrinktai duomenu aibei
-target_cols <- c("signal_mean", "signal_std", "T_pos","R_val", "Q_pos", "Q_val")
+target_cols <- c("seq_size", "signal_std", "wl_side", "wr_side", "R_val", "T_pos", "P_pos")
 with_target_features <- ekg_data_minmax[target_cols]
 
+perplexity <- 30
+pca_init <- TRUE
+max_iter <- 1000
+eta <- 200
+exaggeration_factor <- 12
+normalize <- TRUE
+params <- list(perplexity, pca_init, max_iter, eta, exaggeration_factor)
+apply_and_plot_t_sne(
+  with_target_features,
+  params,
+  labels,
+  "t-SNE vizualizacija atrinktai požymių aibei su numatytais hiperparametrais"
+)
 
+# pritaikom t-SNE metoda normuotai atrinktai duomenu aibei
+target_cols <- c("seq_size", "signal_std", "wl_side", "wr_side", "R_val", "T_pos", "P_pos")
+with_target_features <- ekg_data_minmax[target_cols]
 
-
+perplexity <- 35
+pca_init <- TRUE
+max_iter <- 1000
+eta <- 250
+exaggeration_factor <- 10
+normalize <- TRUE
+params <- list(perplexity, pca_init, max_iter, eta, exaggeration_factor)
+apply_and_plot_t_sne(
+  with_target_features,
+  params,
+  labels,
+  "t-SNE vizualizacija atrinktai požymių aibei su pakeistais hiperparametrais"
+)
