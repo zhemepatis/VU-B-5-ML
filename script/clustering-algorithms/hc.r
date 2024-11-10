@@ -6,7 +6,7 @@ perform_hclustering <- function(data, num_clusters = 4, method = "ward.D", plot 
   
   hc <- hclust(dist(data[, -which(colnames(data) == "label")], method = metric), method = method)
   y_hc <- cutree(hc, k = num_clusters)
-
+  
   if (plot) {
     plot(hc,
          main = 'Dendrograma',
@@ -18,6 +18,10 @@ perform_hclustering <- function(data, num_clusters = 4, method = "ward.D", plot 
   }
 
   if (plot) {
+    if (ncol(data) > 3) {
+      data <- perform_umap(data, n_components = 2)
+    }
+    
     cluster_colors <- c(
       "red", "green", "blue", "purple", "orange", "lightblue", "pink", "brown", 
       "cyan", "darkgreen", "magenta", "darkred", "gray", "darkblue", "gold"
@@ -34,12 +38,20 @@ perform_hclustering <- function(data, num_clusters = 4, method = "ward.D", plot 
     
     par(mar = c(6, 4, 4, 8) + 0.1)
     
+    x_min <- min(data[, 1])
+    x_max <- max(data[, 1])
+    y_min <- min(data[, 2])
+    y_max <- max(data[, 2])
+    plot_min <- min(x_min-3, y_min-3)
+    plot_max <- max(x_max+3, y_max+3)
+    
+    par(pty = "s")
+    
     clusplot(data[, -which(colnames(data) == "label")],
              y_hc,
              lines = 0,
              shade = TRUE,
              color = TRUE,
-             #col.p = point_colors,
              col.p = cluster_colors_named[as.character(y_hc)],
              col.clus = cluster_colors_limit,
              labels = 4,
@@ -47,10 +59,12 @@ perform_hclustering <- function(data, num_clusters = 4, method = "ward.D", plot 
              span = TRUE,
              main = 'Klasterių vizualizacija',
              xlab = 'DIM1',
-             ylab = 'DIM2'
+             ylab = 'DIM2',
+             xlim = c(plot_min, plot_max),
+             ylim = c(plot_min, plot_max)
     )
     legend("topright",
-           inset = c(-0.275, 0),  # Moves the legend outside the plot
+           inset = c(-0.5, 0),
            legend = paste("Klasteris:", 1:num_clusters),
            fill = cluster_colors_named,
            title = "Klasteriai",
@@ -64,7 +78,7 @@ perform_hclustering <- function(data, num_clusters = 4, method = "ward.D", plot 
     )
     
     mtext(paste("Parametrai: metodas =", method, ", metrika =", metric, ", klasterių sk. =", num_clusters),
-          side = 1, line = 4, cex = 1, adj = 1)
+          side = 1, line = 5, cex = 1, adj = 0)
   }
   
   data$cluster <- y_hc
