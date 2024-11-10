@@ -1,6 +1,6 @@
 library(uwot)
 
-perform_umap <- function(data, label_col = "label", n_neighbors = 35, min_dist = 0.02, spread = 1.25, metric = "euclidean") {
+perform_umap <- function(data, label_col = "label", n_neighbors = 25, min_dist = 0.05, spread = 1.25, metric = "euclidean") {
   min_max_normalize <- function(x) { 
     return((x - min(x)) / (max(x) - min(x))) 
   }

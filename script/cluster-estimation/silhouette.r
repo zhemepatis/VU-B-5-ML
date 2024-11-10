@@ -26,16 +26,8 @@ silhouette_method <- function(data, max_clusters = 15) {
 
 
 # Prepas
-ekg_data_silhouette <- ekg_data[, c("signal_mean", "signal_std", "R_val", "Q_pos", "Q_val", "T_pos")]
-ekg_data_silhouette_norm <- ekg_data_silhouette
-
-min_max_normalize <- function(x) { 
-  return((x - min(x)) / (max(x) - min(x))) 
-}
-
-for (col in names(ekg_data_silhouette_norm)) { 
-  ekg_data_silhouette_norm[[col]] <- min_max_normalize(ekg_data_silhouette_norm[[col]])
-}
+ekg_data_silhouette <- ekg_data[, c("signal_mean", "signal_std", "R_val", "Q_pos", "Q_val", "T_pos", "P_pos", "wr_side")]
+ekg_data_silhouette_norm <- normalize_data(ekg_data_silhouette)
 
 # Callinamas metodas
 silhouette_method(ekg_data_silhouette)
