@@ -2,10 +2,10 @@ library(factoextra)
 
 
 # Prepas
-ekg_data_optsim <- ekg_data[, c("signal_mean", "signal_std", "R_val", "Q_pos", "Q_val", "T_pos", "P_pos", "wr_side", "label")]
-#ekg_data_optsim <- ekg_data
+ekg_data_optsim <- ekg_data
+#ekg_data_optsim <- ekg_data[, c("signal_mean", "signal_std", "R_val", "Q_pos", "Q_val", "T_pos", "P_pos", "wr_side", "label")]
 ekg_data_optsim_norm <- normalize_data(ekg_data_optsim)
-ekg_data_optsim_umap <- perform_umap(ekg_data_optsim)
+ekg_data_optsim_umap <- perform_umap(ekg_data_optsim, n_components = 6)
 
 
 # Elbow
