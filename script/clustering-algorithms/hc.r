@@ -10,8 +10,8 @@ perform_hclustering <- function(data, num_clusters = 4, method = "ward.D", plot 
   if (plot) {
     plot(hc,
          main = 'Dendrograma',
-         xlab = 'Euklidinis atstumas',
-         ylab = 'EKG pūpsniai',
+         xlab = 'Duomenų aibės objektai',
+         ylab = 'Atstumas',
          labels = FALSE,
          sub = ''
     )
@@ -42,8 +42,8 @@ perform_hclustering <- function(data, num_clusters = 4, method = "ward.D", plot 
     x_max <- max(data[, 1])
     y_min <- min(data[, 2])
     y_max <- max(data[, 2])
-    plot_min <- min(x_min-3, y_min-3)
-    plot_max <- max(x_max+3, y_max+3)
+    plot_min <- min(x_min-4, y_min-4)
+    plot_max <- max(x_max+4, y_max+4)
     
     par(pty = "s")
     
@@ -83,10 +83,96 @@ perform_hclustering <- function(data, num_clusters = 4, method = "ward.D", plot 
   
   data$cluster <- y_hc
   
-  label_distribution <- prop.table(table(data$cluster, data$label), margin = 1) * 100
-  return(list(label_distribution = label_distribution, clustered_data = if (return_clusters) data else NULL))
+  id_cluster_table <- data.frame(id = seq_len(nrow(data)), cluster = y_hc)
+  
+  label_distribution <- round(prop.table(table(data$cluster, data$label), margin = 1) * 100, 2)
+  return(list(label_distribution = label_distribution, id_cluster_table = id_cluster_table, clustered_data = if (return_clusters) data else NULL))
 }
 
+
+# Pridedamas klasteris aukštos dimensijos duomenims
+add_cluster_column <- function(original_data, id_cluster_table) {
+  original_data$id <- seq_len(nrow(original_data))
+  merged_data <- merge(original_data, id_cluster_table, by = "id", all.x = TRUE)
+  merged_data$id <- NULL
+  return(merged_data)
+}
+
+# Atspausdinamas kiekvieno pozymio summary pagal klasteri
+summarize_clusters <- function(data) {
+  numeric_columns <- sapply(data, is.numeric)
+  summary_list <- list()
+  
+  for (col_name in names(data)[numeric_columns]) {
+    column_stats <- list()
+    for (cluster in unique(data$cluster)) {
+      cluster_data <- data[data$cluster == cluster, col_name, drop = TRUE]
+      cluster_summary <- c(
+        min = round(min(cluster_data, na.rm = TRUE), 4),
+        Q1 = round(quantile(cluster_data, 0.25, na.rm = TRUE), 4),
+        mean = round(mean(cluster_data, na.rm = TRUE), 4),
+        median = round(median(cluster_data, na.rm = TRUE), 4),
+        Q3 = round(quantile(cluster_data, 0.75, na.rm = TRUE), 4),
+        max = round(max(cluster_data, na.rm = TRUE), 4),
+        sd = round(sd(cluster_data, na.rm = TRUE), 4)
+      )
+      column_stats[[paste("Klast.", cluster)]] <- cluster_summary
+    }
+    column_summary_df <- do.call(cbind, column_stats)
+    column_summary_df <- as.data.frame(column_summary_df)
+    column_summary_df <- cbind(Statistika = rownames(column_summary_df), column_summary_df)
+    rownames(column_summary_df) <- NULL
+    summary_list[[col_name]] <- column_summary_df
+  }
+  return(summary_list)
+}
+
+# Atspausdinamas kiekvieno klasterio summary
+# summarize_clusters <- function(data) {
+#   cluster_summaries <- list()
+#   for (cluster in unique(data$cluster)) {
+#     cluster_data <- data[data$cluster == cluster, ]
+#     cluster_summaries[[paste("Cluster", cluster)]] <- summary(cluster_data)
+#   }
+#   return(cluster_summaries)
+# }
+
+
+
+### Metodo callas su prop table ir summaries
+# Reikia prideti 4 pagrindinius ir su UMAP 2 pereiti visus linkages
+# Isbandyt po 2 metrikas
+
+limit_col <- c("signal_mean", "signal_std", "R_val", "Q_pos", "Q_val", "T_pos", "P_pos", "wr_side", "label")
+meth <- "ward.D"
+metr <- "euclidean"
+
+ekg_data_umap <- ekg_data[, limit_col]
+ekg_data_umap <- perform_umap(ekg_data_umap, n_components = 2)
+
+linkage_methods <- c("single", "complete", "average", "ward.D", "ward.D2", "centroid", "median")
+for (m in linkage_methods) {
+  clustering_results <- perform_hclustering(ekg_data_umap, num_clusters = 10, method = m, plot = TRUE, metric = "euclidean", return_clusters = FALSE)
+  print(m)
+  print(clustering_results$label_distribution)
+}
+
+###
+
+
+ekg_data_temp <- ekg_data[ ,limit_col]
+ekg_data_umap <- ekg_data[, limit_col]
+ekg_data_umap <- perform_umap(ekg_data_umap, n_components = 2)
+
+clustering_results <- perform_hclustering(ekg_data_umap, num_clusters = 10, method = "ward.D", plot = TRUE, metric = "euclidean", return_clusters = TRUE)
+
+ekg_data_with_clusters <- add_cluster_column(ekg_data_temp, clustering_results$id_cluster_table)
+cluster_summaries <- summarize_clusters(ekg_data_with_clusters)
+print(cluster_summaries)
+print(clustering_results$label_distribution)
+
+
+# MAIN CALLAI
 ## CALLAI
 limit_col <- c("signal_mean", "signal_std", "R_val", "Q_pos", "Q_val", "T_pos", "P_pos", "wr_side", "label")
 meth <- "ward.D"
@@ -94,13 +180,11 @@ metr <- "euclidean"
 
 
 # ORIG - full
-#ekg_data_hc <- normalize_data(ekg_data)
 ekg_data_hc <- ekg_data
 ekg_data_hc <- perform_umap(ekg_data_hc, n_components = 6)
 perform_hclustering(ekg_data_hc, num_clusters = 3, method = "ward.D", plot = TRUE, metric = "euclidean")
 
 # ORIG - limited
-#ekg_data_hc <- normalize_data(ekg_data[, limit_col])
 ekg_data_hc <- ekg_data[, limit_col]
 ekg_data_hc <- perform_umap(ekg_data_hc, n_components = 6)
 perform_hclustering(ekg_data_hc, num_clusters = 8, method = "ward.D", plot = TRUE, metric = "euclidean")
@@ -109,10 +193,8 @@ perform_hclustering(ekg_data_hc, num_clusters = 8, method = "ward.D", plot = TRU
 ekg_data_umap <- ekg_data
 ekg_data_umap <- perform_umap(ekg_data_umap, n_components = 2)
 perform_hclustering(ekg_data_umap, num_clusters = 9, method = "ward.D", plot = TRUE, metric = "euclidean")
-# empiriskai 10
 
 # UMAP - limited
 ekg_data_umap <- ekg_data[, limit_col]
 ekg_data_umap <- perform_umap(ekg_data_umap, n_components = 2)
 perform_hclustering(ekg_data_umap, num_clusters = 10, method = "ward.D", plot = TRUE, metric = "euclidean")
-# empiriskai 14
