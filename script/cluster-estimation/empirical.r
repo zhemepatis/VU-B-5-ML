@@ -1,8 +1,8 @@
 library(ggplot2)
 
 ekg_data_umap <- ekg_data
-ekg_data_umap[, c("signal_mean", "signal_std", "R_val", "Q_pos", "Q_val", "T_pos", "label")]
-umap_df <- perform_umap(ekg_data_umap)
+ekg_data_umap <- ekg_data_umap[, c("signal_mean", "signal_std", "R_val", "Q_pos", "Q_val", "T_pos", "P_pos", "wr_side", "label")]
+umap_df <- perform_umap(ekg_data_umap, n_components = 2)
 
 max_range <- max(abs(range(umap_df$UMAP1)), abs(range(umap_df$UMAP2)))
 

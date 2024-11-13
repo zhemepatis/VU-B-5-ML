@@ -147,15 +147,19 @@ limit_col <- c("signal_mean", "signal_std", "R_val", "Q_pos", "Q_val", "T_pos", 
 meth <- "ward.D"
 metr <- "euclidean"
 
+
 ekg_data_umap <- ekg_data[, limit_col]
 ekg_data_umap <- perform_umap(ekg_data_umap, n_components = 2)
 
+# geriausias ward.D eksperimentas su 30k objektu
 linkage_methods <- c("single", "complete", "average", "ward.D", "ward.D2", "centroid", "median")
 for (m in linkage_methods) {
   clustering_results <- perform_hclustering(ekg_data_umap, num_clusters = 10, method = m, plot = TRUE, metric = "euclidean", return_clusters = FALSE)
   print(m)
   print(clustering_results$label_distribution)
 }
+
+
 
 ###
 
@@ -170,6 +174,7 @@ ekg_data_with_clusters <- add_cluster_column(ekg_data_temp, clustering_results$i
 cluster_summaries <- summarize_clusters(ekg_data_with_clusters)
 print(cluster_summaries)
 print(clustering_results$label_distribution)
+
 
 
 # MAIN CALLAI
