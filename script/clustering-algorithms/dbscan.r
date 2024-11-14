@@ -7,64 +7,57 @@ perform_kNN_method <- function(data, distance, neighbors) {
   abline(h = distance, lty = 2)
 }
 
-perform_dbscan <- function(data, distance, neighbors, plot_kNN = TRUE) {
+perform_dbscan <- function(data, distance, neighbors, metric = "euclidean", plot_kNN = TRUE) {
   if(plot_kNN) {
     perform_kNN_method(data, distance, neighbors)
   }
-  
+
   dbscan_results <- dbscan(data, distance, neighbors)
   return(dbscan_results)
 }
 
-set.seed(1000)
-
-ekg_data_norm <- normalize_data(ekg_data) # normuojam duomenis
-target_data <- ekg_data_norm[, -32] # paimam visus pozymius, isskyrus "label"
-
 
 # nagrinejam visa duomenu aibe
-ekg_data_6d <- umap(
-  target_data,
-  n_components = 6,
-  n_neighbors = 35,
-  min_dist = 0.02,
-  spread = 1.25,
-  metric = "euclidean"
+target_data <- ekg_data_norm[, -32] # paimam visus pozymius, isskyrus "label"
+
+ekg_data_6d <- perform_umap(target_data, n_components = 6)
+dbscan_results <- perform_dbscan(ekg_data_6d, 0.4, 15, plot_kNN = FALSE)
+ekg_data_2d <- perform_umap(ekg_data_6d, n_components = 2)
+hullplot(
+  ekg_data_2d, 
+  dbscan_results$cluster,
+  main = "DBSCAN grupavimo metodas visai aibei",
+  xlab = "UMAP1",
+  ylab = "UMAP2"
 )
-dbscan_results <- perform_dbscan(ekg_data_6d, 0.3, 5)
-ekg_data_2d <- umap(
-  ekg_data_6d,
-  n_components = 2,
-  n_neighbors = 35,
-  min_dist = 0.02,
-  spread = 1.25,
-  metric = "euclidean"
-)
-hullplot(ekg_data_2d, dbscan_results$cluster)
 
 
 # nagrinejam atrinktus pozymius
-target_cols <- c("signal_mean", "signal_std", "R_val", "Q_pos", "Q_val", "T_pos")
+target_cols <- c("signal_mean", "signal_std", "R_val", "Q_pos", "Q_val", "T_pos", "P_pos", "wr_side")
 target_data <- ekg_data_norm[, target_cols]
 
-ekg_data_6d <- umap(
-  target_data,
-  n_components = 6
+ekg_data_6d <- perform_umap(target_data, n_components = 6)
+dbscan_results <- perform_dbscan(ekg_data_6d, 0.4, 15)
+ekg_data_2d <- perform_umap(ekg_data_6d, n_components = 2)
+hullplot(
+  ekg_data_2d, 
+  dbscan_results$cluster,
+  main = "DBSCAN grupavimo metodas aibei su apribotais požymiais",
+  xlab = "UMAP1",
+  ylab = "UMAP2"
 )
-dbscan_results <- perform_dbscan(ekg_data_6d, 0.3, 5, plot_kNN = FALSE)
-ekg_data_2d <- umap(
-  ekg_data_6d,
-  n_components = 2
-)
-hullplot(ekg_data_2d, dbscan_results$cluster)
 
 
-# nagrinejam suspaustus duomenis iki 2 dimensiju
-target_data <- ekg_data_norm[, -32] # paimam visus pozymius, isskyrus "label"
+# nagrinejam suspaustus duomenis iki 2 
+target_cols <- c("signal_mean", "signal_std", "R_val", "Q_pos", "Q_val", "T_pos", "P_pos", "wr_side")
+target_data <- ekg_data[, target_cols]
 
-ekg_data_2d <- umap(
-  target_data,
-  n_components = 2
+ekg_data_2d <- perform_umap(target_data, n_components = 2)
+dbscan_results <- perform_dbscan(ekg_data_2d, 0.5, 15, plot_kNN = FALSE)
+hullplot(
+  ekg_data_2d, 
+  dbscan_results$cluster,
+  main = "DBSCAN grupavimo metodas sumažintos dimensijos aibei",
+  xlab = "UMAP1",
+  ylab = "UMAP2"
 )
-dbscan_results <- perform_dbscan(ekg_data_2d, 0.2, 15)
-hullplot(ekg_data_2d, dbscan_results$cluster)
