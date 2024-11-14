@@ -23,11 +23,6 @@ perform_umap <- function(data, n_components = 2, label_col = "label", n_neighbor
     metric = metric
   )
   
-  umap_df <- data.frame(
-    UMAP1 = umap_result[, 1],
-    UMAP2 = umap_result[, 2],
-    label = data[[label_col]]
-  )
-  
+  umap_df <- as.data.frame(umap_result)
   return(umap_df)
 }
