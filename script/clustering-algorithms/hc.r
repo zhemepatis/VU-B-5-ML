@@ -4,7 +4,7 @@ perform_hclustering <- function(data, num_clusters = 4, method = "ward.D", plot 
   
   set.seed(6)
   
-  hc <- hclust(dist(data[, -which(colnames(data) == "label")], method = metric), method = method)
+  hc <- hclust(dist(data, method = metric), method = method)
   y_hc <- cutree(hc, k = num_clusters)
   
   if (plot) {
@@ -15,6 +15,7 @@ perform_hclustering <- function(data, num_clusters = 4, method = "ward.D", plot 
          labels = FALSE,
          sub = ''
     )
+    abline(h = hc$height[length(hc$height) - (num_clusters - 1)], col = "red", lwd = 2)
   }
 
   if (plot) {
@@ -47,7 +48,7 @@ perform_hclustering <- function(data, num_clusters = 4, method = "ward.D", plot 
     
     par(pty = "s")
     
-    clusplot(data[, -which(colnames(data) == "label")],
+    clusplot(data,
              y_hc,
              lines = 0,
              shade = TRUE,
@@ -58,18 +59,18 @@ perform_hclustering <- function(data, num_clusters = 4, method = "ward.D", plot 
              plotchar = FALSE,
              span = TRUE,
              main = 'Klasterių vizualizacija',
-             xlab = 'DIM1',
-             ylab = 'DIM2',
+             xlab = 'UMAP1',
+             ylab = 'UMAP2',
              xlim = c(plot_min, plot_max),
              ylim = c(plot_min, plot_max)
     )
     legend("topright",
-           inset = c(-0.5, 0),
+           inset = c(-0.7, -0.1),
            legend = paste("Klasteris:", 1:num_clusters),
            fill = cluster_colors_named,
            title = "Klasteriai",
            title.cex = 1,
-           cex = 0.8,
+           cex = 0.6,
            border = "black",
            bty = "n",
            xpd = TRUE,
@@ -85,8 +86,7 @@ perform_hclustering <- function(data, num_clusters = 4, method = "ward.D", plot 
   
   id_cluster_table <- data.frame(id = seq_len(nrow(data)), cluster = y_hc)
   
-  label_distribution <- round(prop.table(table(data$cluster, data$label), margin = 1) * 100, 2)
-  return(list(label_distribution = label_distribution, id_cluster_table = id_cluster_table, clustered_data = if (return_clusters) data else NULL))
+  return(list(id_cluster_table = id_cluster_table, clustered_data = if (return_clusters) data else NULL))
 }
 
 
@@ -124,6 +124,10 @@ summarize_clusters <- function(data) {
     rownames(column_summary_df) <- NULL
     summary_list[[col_name]] <- column_summary_df
   }
+  
+  label_distribution <- round(prop.table(table(data$cluster, data$label), margin = 1) * 100, 2)
+  print(label_distribution)
+  
   return(summary_list)
 }
 
@@ -187,17 +191,12 @@ metr <- "euclidean"
 # ORIG - full
 ekg_data_hc <- ekg_data
 ekg_data_hc <- perform_umap(ekg_data_hc, n_components = 6)
-perform_hclustering(ekg_data_hc, num_clusters = 3, method = "ward.D", plot = TRUE, metric = "euclidean")
+perform_hclustering(ekg_data_hc, num_clusters = 10, method = "ward.D", plot = TRUE, metric = "euclidean")
 
 # ORIG - limited
 ekg_data_hc <- ekg_data[, limit_col]
 ekg_data_hc <- perform_umap(ekg_data_hc, n_components = 6)
-perform_hclustering(ekg_data_hc, num_clusters = 8, method = "ward.D", plot = TRUE, metric = "euclidean")
-
-# UMAP - full
-ekg_data_umap <- ekg_data
-ekg_data_umap <- perform_umap(ekg_data_umap, n_components = 2)
-perform_hclustering(ekg_data_umap, num_clusters = 9, method = "ward.D", plot = TRUE, metric = "euclidean")
+perform_hclustering(ekg_data_hc, num_clusters = 15, method = "ward.D", plot = TRUE, metric = "euclidean")
 
 # UMAP - limited
 ekg_data_umap <- ekg_data[, limit_col]
