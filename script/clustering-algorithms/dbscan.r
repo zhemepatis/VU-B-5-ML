@@ -29,11 +29,17 @@ get_cluster_coverage <- function(clusters) {
 }
 
 plot_results <- function(data_2d, clusters, eps, minPts, title) {
+  # parenkam spalvas
   cluster_num <- length(unique(clusters))
   color_palette <- hcl(h = seq(15, 360, length = cluster_num), c = 100, l = 50)
   
-  par(mar = c(5, 5, 5, 10))
+  # suvienodinam asis
+  x_range <- range(data_2d[, 1])
+  y_range <- range(data_2d[, 2])
+  combined_range <- range(c(x_range, y_range))
   
+  # atvaizduojam rezultatus
+  par(mar = c(5, 5, 5, 10))
   hullplot(
     data_2d, 
     cl = clusters,
@@ -41,9 +47,13 @@ plot_results <- function(data_2d, clusters, eps, minPts, title) {
     xlab = "UMAP1",
     ylab = "UMAP2",
     cex.lab = 1.5,
-    col = c("black", color_palette)
+    col = c("black", color_palette),
+    xlim = combined_range,
+    ylim = combined_range,
+    asp = 1
   )
   
+  # pridedam klasteriu numerius
   data_2d_df <- as.data.frame(data_2d)
   data_2d_df$Cluster <- as.factor(clusters)
   cluster_centroids <- aggregate(. ~ Cluster, data = data_2d_df, FUN = mean)
@@ -57,7 +67,8 @@ plot_results <- function(data_2d, clusters, eps, minPts, title) {
     cex = 1.2,
     font = 1
   )
-
+    
+  # pridedam legenda
   legend(
     "topright",
     inset = c(-0.25, 0),
@@ -69,6 +80,7 @@ plot_results <- function(data_2d, clusters, eps, minPts, title) {
     xpd = TRUE
   )
 
+  # pridedam parametrus
   param_text <- paste0("eps = ", eps, ", minPts = ", minPts)
   mtext(param_text, side = 1, line = 4, adj = 0.5, cex = 1.5)
 }
