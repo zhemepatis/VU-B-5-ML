@@ -1,17 +1,20 @@
 library(dbscan)
-library(uwot)
 library(fpc)
+library(uwot)
 
-perform_kNN_method <- function(data, distance, neighbors) {
-  kNNdistplot(data, neighbors)
+perform_kNN_method <- function(data, distance, neighbors, title) {
+  par(mar = c(5, 7, 5, 5))
+  kNNdistplot(
+    data,
+    neighbors
+  )
+
   abline(h = distance, lty = 2)
+
+  title(title)
 }
 
-perform_dbscan <- function(data, distance, neighbors, metric = "euclidean", plot_kNN = TRUE) {
-  if(plot_kNN) {
-    perform_kNN_method(data, distance, neighbors)
-  }
-
+perform_dbscan <- function(data, distance, neighbors, metric = "euclidean") {
   dbscan_results <- dbscan(data, distance, neighbors)
   return(dbscan_results)
 }
@@ -25,7 +28,13 @@ get_cluster_coverage <- function(clusters) {
   clustered_points <- sum(clusters != 0)
   
   coverage_percentage <- (clustered_points / total_points) * 100
+
   return(round(coverage_percentage, 2))
+}
+
+save_label_distribution <- function(distribution, filename) {
+  distribution_df <- as.data.frame(distribution)
+  write.csv(distribution_df, file = filename, row.name = TRUE)
 }
 
 plot_results <- function(data_2d, clusters, eps, minPts, title) {
@@ -85,6 +94,7 @@ plot_results <- function(data_2d, clusters, eps, minPts, title) {
   mtext(param_text, side = 1, line = 4, adj = 0.5, cex = 1.5)
 }
 
+
 # nagrinejam visa duomenu aibe
 target_data <- ekg_data[, -32]
 
@@ -93,14 +103,14 @@ ekg_data_2d <- perform_umap(ekg_data_6d, n_components = 2)
 
 eps = 0.5
 neighbours = 5
+perform_kNN_method(ekg_data_6d, eps, neighbours, "Kelio metodas visai duomenų aibei")
 dbscan_results <- perform_dbscan(ekg_data_6d, eps, neighbours)
 
 plot_results(ekg_data_2d, dbscan_results$cluster, eps, neighbours, "DBSCAN metodas visai duomenų aibei")
 label_distribution <- get_label_distribution(ekg_data, dbscan_results$cluster)
+save_label_distribution(label_distribution, "output/label_distribution_whole.csv")
 coverage <- get_cluster_coverage(dbscan_results$cluster)
-
 print(coverage)
-print(label_distribution)
 
 
 # nagrinejam atrinktus pozymius
@@ -112,14 +122,14 @@ ekg_data_2d <- perform_umap(ekg_data_6d, n_components = 2)
 
 eps = 0.45
 neighbours = 12
+perform_kNN_method(ekg_data_6d, eps, neighbours, "Kelio metodas duomenų aibei su apribotais požymiais")
 dbscan_results <- perform_dbscan(ekg_data_6d, eps, neighbours)
 
 plot_results(ekg_data_2d, dbscan_results$cluster, eps, neighbours, "DBSCAN metodas duomenų aibei su apribotais požymiais")
 label_distribution <- get_label_distribution(ekg_data, dbscan_results$cluster)
+save_label_distribution(label_distribution, "output/label_distribution_limited.csv")
 coverage <- get_cluster_coverage(dbscan_results$cluster)
-
 print(coverage)
-print(label_distribution)
 
 
 # nagrinejam atrinktus pozymius
@@ -130,11 +140,11 @@ ekg_data_2d <- perform_umap(target_data, n_components = 2)
 
 eps = 0.5
 neighbours = 10
+perform_kNN_method(ekg_data_2d, eps, neighbours, "Kelio metodas duomenų aibei, sumažintai iki 2 dimesnijų")
 dbscan_results <- perform_dbscan(ekg_data_2d, eps, neighbours)
 
 plot_results(ekg_data_2d, dbscan_results$cluster, eps, neighbours, "DBSCAN metodas duomenų aibei, sumažintai iki 2 dimesnijų")
 label_distribution <- get_label_distribution(ekg_data, dbscan_results$cluster)
+save_label_distribution(label_distribution, "output/label_distribution_2d.csv")
 coverage <- get_cluster_coverage(dbscan_results$cluster)
-
 print(coverage)
-print(label_distribution)
