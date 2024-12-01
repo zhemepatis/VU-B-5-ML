@@ -1,21 +1,11 @@
 library(uwot)
 
 perform_umap <- function(data, n_components = 2, label_col = "label", n_neighbors = 25, min_dist = 0.05, spread = 1.25, metric = "euclidean") {
-  min_max_normalize <- function(x) { 
-    return((x - min(x)) / (max(x) - min(x))) 
-  }
-  
-  data_normalized <- data
-  
-  columns_to_normalize <- setdiff(names(data), label_col)
-  
-  for (col in columns_to_normalize) { 
-    data_normalized[[col]] <- min_max_normalize(data_normalized[[col]]) 
-  }
+  target_cols <- setdiff(names(data), label_col)
   
   set.seed(1000)
   umap_result <- umap(
-    data_normalized[, columns_to_normalize], 
+    data[, target_cols], 
     n_neighbors = n_neighbors,
     n_components = n_components,
     min_dist = min_dist, 
@@ -23,6 +13,11 @@ perform_umap <- function(data, n_components = 2, label_col = "label", n_neighbor
     metric = metric
   )
   
-  umap_df <- as.data.frame(umap_result)
+  umap_df <- as.data.frame(umap_result,  data[[label_col]])
+  umap_df[[label_col]] <- data[[label_col]]
   return(umap_df)
 }
+
+test_set_2d <- perform_umap(test_set_2d)
+training_set_2d <- perform_umap(training_set_2d)
+validation_set_2d <- perform_umap(validation_set_2d)
