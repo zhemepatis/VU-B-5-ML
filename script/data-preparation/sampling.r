@@ -46,9 +46,10 @@ test_set <- result[[1]]
 training_set <- result[[2]]
 validation_set <- result[[3]]
 
-test_set_2d <- test_set
-training_set_2d <- training_set
-validation_set_2d <- validation_set
+target_cols <- c("signal_mean", "signal_std", "R_val", "Q_pos", "Q_val", "T_pos", "P_pos", "wr_side", "label")
+test_set_2d <- test_set[, target_cols]
+training_set_2d <- training_set[, target_cols]
+validation_set_2d <- validation_set[, target_cols]
 
 # panaikinam nebereikalingus resursus
 rm(sample_by_label)
