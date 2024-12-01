@@ -1,21 +1,46 @@
+library(dplyr)
+library(caTools)
+
 sample_by_label <- function(data, label, size) {
   result <- data[data$label == label, ]
   result <- result[rowSums(is.na(result)) != ncol(result), ]
   result <- result[sample(seq_len(nrow(result)), size), ]
-
+  
   return(result)
 }
 
-set.seed(1000)
+set.seed(1000) # reikalinga atkuriamumui
 
-sample_size <- 1000
+# suzinom, kurios klases objektu yra maziau
+label_count <- count(ekg_data, label)
+min_label_count <- min(label_count$n)
 
-sample_0 <- sample_by_label(ekg_data, 0.0, sample_size)
-sample_1 <- sample_by_label(ekg_data, 1.0, sample_size)
-sample_2 <- sample_by_label(ekg_data, 2.0, sample_size)
+# susimazinam aibe
+data <- data.frame()
+for (idx in 1:1:nrow(label_count)) {
+  curr_label <- label_count$label[idx]
+  curr_sample <- sample_by_label(ekg_data, curr_label, min_label_count)
+  data <- rbind(data, curr_sample)
+}
+ekg_data <- data
 
-ekg_data <- rbind(sample_0, sample_1, sample_2)
+# skaidom i mokymosi, validavimo, testavimo aibes
+split <- sample.split(ekg_data$label, SplitRatio = 0.8)
+test_set <- subset(ekg_data, split == FALSE)
 
-# istrinam resursus, kuriu nebenaudosim
+temp_set <- subset(ekg_data, split == TRUE)
+
+split <- sample.split(temp_set, SplitRatio = 0.8)
+training_set = subset(temp_set, split == TRUE)
+validation_set = subset(temp_set, split == FALSE)
+
+# panaikinam nebereikalingus resursus
 rm(sample_by_label)
-rm(sample_size)
+rm(label_count)
+rm(data)
+rm(idx)
+rm(curr_label)
+rm(curr_sample)
+rm(min_label_count)
+rm(split)
+rm(temp_set)
