@@ -1,6 +1,22 @@
 library(dplyr)
 library(caTools)
 
+split_data_into_sets <- function(data, label_colname = "label") {
+  split <- sample.split(data[[label_colname]], SplitRatio = 0.8)
+  test_set <- subset(data, split == FALSE)
+  temp_set <- subset(data, split == TRUE)
+
+  split <- sample.split(temp_set[[label_colname]], SplitRatio = 0.8)
+  training_set <- subset(temp_set, split == TRUE)
+  validation_set <- subset(temp_set, split == FALSE)
+  
+  return(list(
+    test_set = test_set,
+    training_set = training_set,
+    validation_set = validation_set
+  ))
+}
+
 sample_by_label <- function(data, label, size) {
   result <- data[data$label == label, ]
   result <- result[rowSums(is.na(result)) != ncol(result), ]
@@ -24,23 +40,20 @@ for (idx in 1:1:nrow(label_count)) {
 }
 ekg_data <- data
 
-# skaidom i mokymosi, validavimo, testavimo aibes
-split <- sample.split(ekg_data$label, SplitRatio = 0.8)
-test_set <- subset(ekg_data, split == FALSE)
+# skaidom duomenis i mokymosi, validavimo, testavimo aibes
+result <- split_data_into_sets(ekg_data)
+test_set <- result[[1]]
+training_set <- result[[2]]
+validation_set <- result[[3]]
 
-temp_set <- subset(ekg_data, split == TRUE)
-
-split <- sample.split(temp_set, SplitRatio = 0.8)
-training_set = subset(temp_set, split == TRUE)
-validation_set = subset(temp_set, split == FALSE)
+test_set_2d <- test_set
+training_set_2d <- training_set
+validation_set_2d <- validation_set
 
 # panaikinam nebereikalingus resursus
 rm(sample_by_label)
 rm(label_count)
 rm(data)
-rm(idx)
 rm(curr_label)
 rm(curr_sample)
 rm(min_label_count)
-rm(split)
-rm(temp_set)

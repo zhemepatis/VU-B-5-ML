@@ -14,9 +14,14 @@ min_max_normalize <- function(x) {
   return((x - min(x)) / (max(x) - min(x)))
 }
 
-test_set <- normalize_data(test_set)
+# normuojame duomenu aibes
+test_set <- normalize_data(ekg_data)
 training_set <- normalize_data(training_set)
 validation_set <- normalize_data(validation_set)
+
+test_set_2d <- normalize_data(test_set_2d)
+training_set_2d <- normalize_data(training_set_2d)
+validation_set_2d <- normalize_data(validation_set_2d)
 
 # istrinam resursus, kuriu nebenaudosim
 rm(normalize_data)
