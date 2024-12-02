@@ -1,11 +1,14 @@
 get_stats <- function(validation_set, prediction) {
   confusion_matrix <- table(validation_set$label, prediction)
+  print("Confusion matrix:")
   print(confusion_matrix)
   
   prediction_micro_stats <- get_prediction_micro_stats(confusion_matrix)
+  print("Micro statistics:")
   print(prediction_micro_stats)
   
   prediction_macro_stats <- get_prediction_macro_stats(confusion_matrix)
+  print("Macro statistics:")
   print(prediction_macro_stats)
 }
 

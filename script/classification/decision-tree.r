@@ -23,9 +23,9 @@ apply_decision_tree <- function(training_set, validation_set) {
 prediction <- apply_decision_tree(training_set, validation_set)
 validation_set_reduced <- perform_umap(validation_set)
 get_stats(validation_set, prediction)
-plot_predictions(validation_set_reduced, prediction)
+plot_predictions(validation_set_reduced, prediction, "Sprendimo medžio klasifikavimo rezultatai pilnai aibei")
 
 # suspausta, atrinkta duomenu aibe
 prediction <- apply_decision_tree(training_set_2d, validation_set_2d)
 get_stats(validation_set_2d, prediction)
-plot_predictions(validation_set_2d, prediction)
+plot_predictions(validation_set_2d, prediction, "Sprendimo medžio klasifikavimo rezultatai apribotai suspaustai aibei")
