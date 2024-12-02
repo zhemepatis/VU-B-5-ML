@@ -1,8 +1,8 @@
 library(rpart.plot)
 library(rpart)
-library(ggplot2)
-source("script/analysis/prediction_plot.r")
+source("script/analysis/prediction-plot.r")
 source("script/analysis/prediction-stats.r")
+source("script/analysis/roc-curve.r")
 
 apply_decision_tree <- function(training_set, validation_set) {
   training_set$label <- as.factor(training_set$label)
@@ -15,17 +15,37 @@ apply_decision_tree <- function(training_set, validation_set) {
   # validuojam modeli
   target_cols <- setdiff(names(validation_set), "label")
   prediction <- predict(model, newdata = validation_set[, target_cols], type = 'class')
+  prediction_prob <- predict(model, newdata = validation_set[, target_cols], type = 'prob')
   
-  return(prediction)
+  # surenkam rezultatus
+  results <- list(
+    prediction = prediction,
+    prediction_prob = prediction_prob
+  )
+  
+  return(results)
 }
 
+
 # nesuspausta, pilna duomenu aibe
-prediction <- apply_decision_tree(training_set, validation_set)
+results <- apply_decision_tree(training_set, validation_set)
+prediction <- results$prediction
+prediction_prob <- results$prediction_prob
+
 validation_set_reduced <- perform_umap(validation_set)
+
 get_stats(validation_set, prediction)
 plot_predictions(validation_set_reduced, prediction, "Sprendimo medžio klasifikavimo rezultatai pilnai aibei")
+roc_curve(validation_set, prediction_prob, positive_class = "2", "Sprendimo medžio ROC kreivė pilnai aibei")
+get_auc(validation_set, prediction_prob, "2")
+
 
 # suspausta, atrinkta duomenu aibe
-prediction <- apply_decision_tree(training_set_2d, validation_set_2d)
+results <- apply_decision_tree(training_set_2d, validation_set_2d)
+prediction <- results$prediction
+prediction_prob <- results$prediction_prob
+
 get_stats(validation_set_2d, prediction)
 plot_predictions(validation_set_2d, prediction, "Sprendimo medžio klasifikavimo rezultatai apribotai suspaustai aibei")
+roc_curve(validation_set_2d, prediction_prob, positive_class = "2", "Sprendimo medžio ROC kreivė apribotai suspaustai aibei")
+get_auc(validation_set_2d, prediction_prob, "2")
