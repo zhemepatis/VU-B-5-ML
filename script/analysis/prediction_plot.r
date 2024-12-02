@@ -1,5 +1,7 @@
 plot_predictions <- function(data, prediction, title = "Klasifikavimo rezultatai") {
-  # Create a new column for correctness labels
+  data$prediction <- prediction
+  data$correct <- validation_set$label == prediction
+  
   data$correct_label <- ifelse(data$correct, "Teisingas spėjimas", "Neteisingas spėjimas")
   
   ggplot(data, aes(x = V1, y = V2)) +
