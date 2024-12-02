@@ -14,12 +14,12 @@ plot_predictions <- function(data, prediction, title = "Klasifikavimo rezultatai
     ) +
     scale_fill_manual(
       values = c("0" = "#52baff", "2" = "#fdae61"),
-      name = "Predicted Class",
+      name = "Klasės",
       labels = c("0" = "N(0) klasė", "2" = "V(2) klasė")
     ) +
     scale_color_manual(
       values = c("Teisingas spėjimas" = "black", "Neteisingas spėjimas" = "red"),
-      name = "Correctness"
+      name = "Spėjimo teisingumas"
     ) +
     labs(
       title = title,
