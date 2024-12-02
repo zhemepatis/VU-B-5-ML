@@ -19,3 +19,16 @@ roc_curve <- function(validation_set, prediction_prob, positive_class = "1", tit
     theme_minimal() +
     geom_abline(linetype = "dashed", color = "gray")
 }
+
+get_auc <- function(validation_set, prediction_prob, positive_class = "1") {
+  if (!is.factor(validation_set$label)) {
+    validation_set$label <- as.factor(validation_set$label)
+  }
+  
+  prob_positive <- prediction_prob[, positive_class]
+  
+  roc_obj <- roc(validation_set$label, prob_positive, levels = rev(levels(validation_set$label)))
+  
+  auc_value <- auc(roc_obj)
+  return(auc_value)
+}

@@ -1,6 +1,6 @@
 library(rpart.plot)
 library(rpart)
-source("script/analysis/prediction_plot.r")
+source("script/analysis/prediction-plot.r")
 source("script/analysis/prediction-stats.r")
 source("script/analysis/roc-curve.r")
 
@@ -37,6 +37,7 @@ validation_set_reduced <- perform_umap(validation_set)
 get_stats(validation_set, prediction)
 plot_predictions(validation_set_reduced, prediction, "Sprendimo medžio klasifikavimo rezultatai pilnai aibei")
 roc_curve(validation_set, prediction_prob, positive_class = "2", "Sprendimo medžio ROC kreivė pilnai aibei")
+get_auc(validation_set, prediction_prob, "2")
 
 
 # suspausta, atrinkta duomenu aibe
@@ -47,3 +48,4 @@ prediction_prob <- results$prediction_prob
 get_stats(validation_set_2d, prediction)
 plot_predictions(validation_set_2d, prediction, "Sprendimo medžio klasifikavimo rezultatai apribotai suspaustai aibei")
 roc_curve(validation_set_2d, prediction_prob, positive_class = "2", "Sprendimo medžio ROC kreivė apribotai suspaustai aibei")
+get_auc(validation_set_2d, prediction_prob, "2")
