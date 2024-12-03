@@ -23,6 +23,7 @@ apply_random_forest <- function(training_set, validation_set) {
   return(results)
 }
 
+
 # nesuspausta, pilna duomenu aibe
 results <- apply_random_forest(training_set, validation_set)
 prediction <- results$prediction
