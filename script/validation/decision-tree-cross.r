@@ -61,12 +61,9 @@ apply_decision_tree_cross <- function(data, folds_num = 10, reduce = FALSE) {
     f1_mean = mean(macro_stats_intermediate$f1),
     f1_variance = var(macro_stats_intermediate$f1)
   )
-
-  return(list(
-    accuracy = accuracy_result,
-    micro_stats = micro_stats_result,
-    macro_stats = macro_stats_result
-  ))
+  
+  stats_result <- data.frame(accuracy_result, micro_stats_result, macro_stats_result)
+  return(stats_result)
 }
 
 # nesuspausta, pilna duomenu aibe
