@@ -66,13 +66,7 @@ apply_naive_bayes_hold_out <- function(data, iteration_num = 10, reduce = FALSE)
 
 # nesuspausta, pilna duomenu aibe
 hold_out_results <- apply_naive_bayes_hold_out(ekg_data)
-accuracy <- hold_out_results$accuracy
-micro_stats <- hold_out_results$micro_stats
-macro_stats <- hold_out_results$macro_stats
 
 # suspausta, atrinkta duomenu aibe
 target_cols <- c("signal_mean", "signal_std", "R_val", "Q_pos", "Q_val", "T_pos", "P_pos", "wr_side", "label")
 hold_out_results_2d <- apply_naive_bayes_hold_out(ekg_data[, target_cols], reduce = TRUE)
-accuracy <- hold_out_results$accuracy
-micro_stats <- hold_out_results$micro_stats
-macro_stats <- hold_out_results$macro_stats
