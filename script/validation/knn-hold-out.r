@@ -1,5 +1,5 @@
 source("script/analysis/prediction-stats.r")
-source("script/classification/decision-tree.r")
+source("script/classification/knn.r")
 source("script/data-preparation/norm.r")
 source("script/dimension-reduction/umap.r")
 
@@ -20,15 +20,15 @@ apply_decision_tree_hold_out <- function(data, iteration_num = 10, reduce = FALS
       temp_training_set <- perform_umap(temp_training_set)
       temp_validation_set <- perform_umap(temp_validation_set)
     }
-
-    alg_results <- apply_decision_tree(temp_training_set, temp_validation_set)
+    
+    alg_results <- apply_knn(temp_training_set, temp_validation_set)
     predictions <- alg_results$prediction
-
+    
     confusion_matrix <- get_confusion_matrix(temp_validation_set, predictions)
     accuracy <- get_accuracy(confusion_matrix)
     micro_stats <- get_prediction_micro_stats(confusion_matrix)
     macro_stats <- get_prediction_macro_stats(confusion_matrix)
-
+    
     accuracy_intermediate <- c(accuracy_intermediate, accuracy)
     micro_stats_intermediate <- rbind(micro_stats_intermediate, micro_stats)
     macro_stats_intermediate <- rbind(macro_stats_intermediate, macro_stats)

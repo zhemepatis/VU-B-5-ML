@@ -40,25 +40,3 @@ apply_knn <- function(training_set, validation_set) {
   
   return(results)
 }
-
-# nesuspausta, pilna duomenu aibe
-results <- apply_knn(training_set, validation_set)
-prediction <- results$prediction
-prediction_prob <- results$prediction_prob
-
-validation_set_reduced <- perform_umap(validation_set)
-
-get_stats(validation_set, prediction)
-plot_predictions(validation_set_reduced, prediction, "KNN klasifikavimo rezultatai pilnai aibei")
-roc_curve(validation_set, prediction_prob, positive_class = "2", "KNN ROC kreivė pilnai aibei")
-get_auc(validation_set, prediction_prob, "2")
-
-# suspausta, atrinkta duomenu aibe
-results <- apply_knn(training_set_2d, validation_set_2d)
-prediction <- results$prediction
-prediction_prob <- results$prediction_prob
-
-get_stats(validation_set_2d, prediction)
-plot_predictions(validation_set_2d, prediction, "KNN klasifikavimo rezultatai apribotai suspaustai aibei")
-roc_curve(validation_set_2d, prediction_prob, positive_class = "2", "KNN ROC kreivė apribotai suspaustai aibei")
-get_auc(validation_set_2d, prediction_prob, "2")
