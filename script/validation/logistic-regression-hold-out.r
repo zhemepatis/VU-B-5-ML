@@ -65,8 +65,7 @@ apply_logistic_regression_hold_out <- function(data, iteration_num = 10, reduce 
 }
 
 # nesuspausta, pilna duomenu aibe
-hold_out_results <- apply_logistic_regression_hold_out(ekg_data)
+hold_out_results <- apply_logistic_regression_hold_out(training_set)
 
 # suspausta, atrinkta duomenu aibe
-target_cols <- c("signal_mean", "signal_std", "R_val", "Q_pos", "Q_val", "T_pos", "P_pos", "wr_side", "label")
-hold_out_results_2d <- apply_logistic_regression_hold_out(ekg_data[, target_cols], reduce = TRUE)
+hold_out_results_2d <- apply_logistic_regression_hold_out(training_set_2d, reduce = TRUE)

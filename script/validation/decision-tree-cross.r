@@ -70,8 +70,7 @@ apply_decision_tree_cross <- function(data, folds_num = 10, reduce = FALSE) {
 }
 
 # nesuspausta, pilna duomenu aibe
-cross_results <- apply_decision_tree_cross(ekg_data)
+cross_results <- apply_decision_tree_cross(training_set)
 
 # suspausta, atrinkta duomenu aibe
-target_cols <- c("signal_mean", "signal_std", "R_val", "Q_pos", "Q_val", "T_pos", "P_pos", "wr_side", "label")
-cross_results_2d <- apply_decision_tree_cross(ekg_data[, target_cols], reduce = TRUE)
+cross_results_2d <- apply_decision_tree_cross(training_set_2d, reduce = TRUE)

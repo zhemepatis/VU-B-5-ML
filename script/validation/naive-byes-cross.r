@@ -1,10 +1,10 @@
 library(caret)
 source("script/analysis/prediction-stats.r")
-source("script/classification/logistic-regression.r")
+source("script/classification/naive-bayes.r")
 source("script/data-preparation/norm.r")
 source("script/dimension-reduction/umap.r")
 
-apply_logistic_regression_cross <- function(data, folds_num = 10, reduce = FALSE) {
+apply_naive_bayes_cross <- function(data, folds_num = 10, reduce = FALSE) {
   accuracy_intermediate <- numeric()
   micro_stats_intermediate <- data.frame()
   macro_stats_intermediate <- data.frame()
@@ -26,7 +26,7 @@ apply_logistic_regression_cross <- function(data, folds_num = 10, reduce = FALSE
       temp_validation_set <- perform_umap(temp_validation_set)
     }
     
-    alg_results <- apply_logistic_regression(temp_training_set, temp_validation_set)
+    alg_results <- apply_naive_bayes(temp_training_set, temp_validation_set)
     predictions <- alg_results$prediction
     
     confusion_matrix <- get_confusion_matrix(temp_validation_set, predictions)
@@ -70,8 +70,7 @@ apply_logistic_regression_cross <- function(data, folds_num = 10, reduce = FALSE
 }
 
 # nesuspausta, pilna duomenu aibe
-cross_results <- apply_logistic_regression_cross(ekg_data)
+cross_results <- apply_naive_bayes_cross(training_set)
 
 # suspausta, atrinkta duomenu aibe
-target_cols <- c("signal_mean", "signal_std", "R_val", "Q_pos", "Q_val", "T_pos", "P_pos", "wr_side", "label")
-cross_results_2d <- apply_logistic_regression_cross(ekg_data[, target_cols], reduce = TRUE)
+cross_results_2d <- apply_naive_bayes_cross(training_set_2d, reduce = TRUE)
