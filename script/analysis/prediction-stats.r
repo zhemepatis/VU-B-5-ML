@@ -1,5 +1,5 @@
 get_stats <- function(validation_set, prediction) {
-  confusion_matrix <- table(validation_set$label, prediction)
+  confusion_matrix <- get_confusion_matrix(validation_set, prediction)
   print("Confusion matrix:")
   print(confusion_matrix)
   
@@ -18,8 +18,6 @@ get_prediction_macro_stats <- function(confusion_matrix) {
   precision <- mean(micro_stats$precision)
   recall <- mean(micro_stats$recall)
   f1 <- mean(micro_stats$f1)
-  
-  print(precision)
   
   result <- data.frame(
     precision,
@@ -44,11 +42,14 @@ get_prediction_micro_stats <- function(confusion_matrix) {
   return(result)
 }
 
+get_confusion_matrix <- function(validation_set, prediction) {
+  return(table(validation_set$label, prediction))
+}
+
 get_accuracy <- function(confusion_matrix) {
-  diagonal <- diag(confusion_matrix)
-  instance_num <- get_instance_num(confusion_matrix)
-  
-  return(diagonal / instance_num)
+  correct_predictions <- sum(diag(confusion_matrix))
+  total_instances <- sum(confusion_matrix)
+  return(correct_predictions / total_instances)
 }
 
 get_instance_num <- function(confusion_matrix) {

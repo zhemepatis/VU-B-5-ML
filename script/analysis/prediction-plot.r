@@ -1,3 +1,5 @@
+library(ggplot2)
+
 plot_predictions <- function(data, prediction, title = "Klasifikavimo rezultatai") {
   data$prediction <- prediction
   data$correct <- validation_set$label == prediction
