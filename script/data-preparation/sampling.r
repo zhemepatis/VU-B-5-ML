@@ -1,4 +1,5 @@
 library(dplyr)
+library(caTools)
 
 split_data_into_sets <- function(data, label_colname = "label", ratio = 0.8) {
   split <- sample.split(data[[label_colname]], SplitRatio = ratio)
