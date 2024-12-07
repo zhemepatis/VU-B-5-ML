@@ -17,7 +17,3 @@ perform_umap <- function(data, n_components = 2, label_col = "label", n_neighbor
   umap_df[[label_col]] <- data[[label_col]]
   return(umap_df)
 }
-
-test_set_2d <- perform_umap(test_set_2d)
-training_set_2d <- perform_umap(training_set_2d)
-validation_set_2d <- perform_umap(validation_set_2d)
