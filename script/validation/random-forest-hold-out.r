@@ -1,9 +1,9 @@
 source("script/analysis/prediction-stats.r")
-source("script/classification/knn.r")
+source("script/classification/random-forest.r")
 source("script/data-preparation/norm.r")
 source("script/dimension-reduction/umap.r")
 
-apply_knn_hold_out <- function(data, iteration_num = 10, reduce = FALSE) {
+apply_random_forest_hold_out <- function(data, iteration_num = 10, reduce = FALSE) {
   accuracy_intermediate <- numeric()
   micro_stats_intermediate <- data.frame()
   macro_stats_intermediate <- data.frame()
@@ -21,7 +21,7 @@ apply_knn_hold_out <- function(data, iteration_num = 10, reduce = FALSE) {
       temp_validation_set <- perform_umap(temp_validation_set)
     }
     
-    alg_results <- apply_knn(temp_training_set, temp_validation_set)
+    alg_results <- apply_random_forest(temp_training_set, temp_validation_set)
     predictions <- alg_results$prediction
     
     confusion_matrix <- get_confusion_matrix(temp_validation_set, predictions)
@@ -65,14 +65,14 @@ apply_knn_hold_out <- function(data, iteration_num = 10, reduce = FALSE) {
 }
 
 # nesuspausta, pilna duomenu aibe
-hold_out_results <- apply_knn_hold_out(ekg_data)
+hold_out_results <- apply_random_forest_hold_out(ekg_data)
 accuracy <- hold_out_results$accuracy
 micro_stats <- hold_out_results$micro_stats
 macro_stats <- hold_out_results$macro_stats
 
 # suspausta, atrinkta duomenu aibe
 target_cols <- c("signal_mean", "signal_std", "R_val", "Q_pos", "Q_val", "T_pos", "P_pos", "wr_side", "label")
-hold_out_results_2d <- apply_knn_hold_out(ekg_data[, target_cols], reduce = TRUE)
+hold_out_results_2d <- apply_random_forest_hold_out(ekg_data[, target_cols], reduce = TRUE)
 accuracy <- hold_out_results$accuracy
 micro_stats <- hold_out_results$micro_stats
 macro_stats <- hold_out_results$macro_stats

@@ -1,7 +1,4 @@
-library(class)  # For KNN
-source("script/analysis/prediction-plot.r")
-source("script/analysis/prediction-stats.r")
-source("script/analysis/roc-curve.r")
+library(class)
 
 apply_knn <- function(training_set, validation_set) {
   training_set$label <- as.factor(training_set$label)
@@ -31,8 +28,7 @@ apply_knn <- function(training_set, validation_set) {
   for (i in seq_along(prediction)) {
     prediction_prob_matrix[i, as.character(prediction[i])] <- prediction_prob[i]
   }
-  
-  # Results
+
   results <- list(
     prediction = prediction,
     prediction_prob = prediction_prob_matrix

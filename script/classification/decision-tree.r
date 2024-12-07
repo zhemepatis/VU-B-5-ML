@@ -1,10 +1,6 @@
 library(rpart.plot)
 library(rpart)
 
-# source("script/analysis/prediction-plot.r")
-# source("script/analysis/prediction-stats.r")
-# source("script/analysis/roc-curve.r")
-
 apply_decision_tree <- function(training_set, validation_set, plot_decision_tree = FALSE) {
   training_set$label <- as.factor(training_set$label)
   validation_set$label <- as.factor(validation_set$label)

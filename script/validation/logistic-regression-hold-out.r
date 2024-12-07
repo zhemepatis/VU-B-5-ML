@@ -3,7 +3,7 @@ source("script/classification/logistic-regression.r")
 source("script/data-preparation/norm.r")
 source("script/dimension-reduction/umap.r")
 
-apply_decision_tree_hold_out <- function(data, iteration_num = 10, reduce = FALSE) {
+apply_logistic_regression_hold_out <- function(data, iteration_num = 10, reduce = FALSE) {
   accuracy_intermediate <- numeric()
   micro_stats_intermediate <- data.frame()
   macro_stats_intermediate <- data.frame()
@@ -65,14 +65,14 @@ apply_decision_tree_hold_out <- function(data, iteration_num = 10, reduce = FALS
 }
 
 # nesuspausta, pilna duomenu aibe
-hold_out_results <- apply_decision_tree_hold_out(ekg_data)
+hold_out_results <- apply_logistic_regression_hold_out(ekg_data)
 accuracy <- hold_out_results$accuracy
 micro_stats <- hold_out_results$micro_stats
 macro_stats <- hold_out_results$macro_stats
 
 # suspausta, atrinkta duomenu aibe
 target_cols <- c("signal_mean", "signal_std", "R_val", "Q_pos", "Q_val", "T_pos", "P_pos", "wr_side", "label")
-hold_out_results_2d <- apply_decision_tree_hold_out(ekg_data[, target_cols], reduce = TRUE)
+hold_out_results_2d <- apply_logistic_regression_hold_out(ekg_data[, target_cols], reduce = TRUE)
 accuracy <- hold_out_results$accuracy
 micro_stats <- hold_out_results$micro_stats
 macro_stats <- hold_out_results$macro_stats
