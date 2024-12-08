@@ -1,4 +1,4 @@
-library("writexl")  
+library("writexl")
 
 source("script/analysis/prediction-stats.r")
 source("script/validation/validation-funcs.r")
