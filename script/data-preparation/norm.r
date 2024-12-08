@@ -15,7 +15,6 @@ normalize_sets <- function(main_set, secondary_set) {
   return(result)
 }
 
-
 normalize_data <- function(data, label_colname = "label", custom_min = NULL, custom_max = NULL) {
   columns_to_normalize <- setdiff(colnames(data), label_colname)
   

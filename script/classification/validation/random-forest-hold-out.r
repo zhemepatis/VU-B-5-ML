@@ -1,9 +1,7 @@
-library("writexl")  
-
-source("script/main.r")
+library("writexl")
 
 source("script/analysis/prediction-stats.r")
-source("script/validation/validation-funcs.r")
+source("script/classification/validation/validation-funcs.r")
 source("script/classification/random-forest.r")
 source("script/data-preparation/norm.r")
 source("script/dimension-reduction/umap.r")
