@@ -42,6 +42,7 @@ apply_random_forest_hold_out <- function(data, iteration_num = 10, reduce = FALS
     macro_stats_intermediate <- rbind(macro_stats_intermediate, macro_stats)
   }
   
+  print(confusion_matrix)
   result_stats <- sum_up_stats(accuracy_intermediate, micro_stats_intermediate_neg, micro_stats_intermediate_pos, macro_stats_intermediate)
   return(result_stats)
 }
