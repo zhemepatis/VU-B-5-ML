@@ -69,7 +69,10 @@ get_recall <- function(confusion_matrix) {
   diagonal <- diag(confusion_matrix)
   rowsums <- apply(confusion_matrix, 2, sum)
   
-  return(diagonal / rowsums)
+  recall <- diagonal / rowsums
+  recall[is.nan(recall)] <- 0
+  
+  return(recall)
 }
 
 get_f1 <- function(confusion_matrix) {

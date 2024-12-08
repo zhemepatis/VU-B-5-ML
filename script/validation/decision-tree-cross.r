@@ -1,4 +1,7 @@
 library("writexl")
+library(caret)
+
+source("script/main.r")
 
 source("script/analysis/prediction-stats.r")
 source("script/validation/validation-funcs.r")
@@ -44,6 +47,9 @@ apply_decision_tree_cross <- function(data, folds_num = 10, reduce = FALSE) {
     macro_stats <- get_prediction_macro_stats(confusion_matrix)
     macro_stats_intermediate <- rbind(macro_stats_intermediate, macro_stats)
   }
+  
+  print(micro_stats_intermediate_pos)
+  print(micro_stats_intermediate_neg)
   
   result_stats <- sum_up_stats(accuracy_intermediate, micro_stats_intermediate_neg, micro_stats_intermediate_pos, macro_stats_intermediate)
   return(result_stats)
