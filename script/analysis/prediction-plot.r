@@ -2,7 +2,7 @@ library(ggplot2)
 
 plot_predictions <- function(data, prediction, title = "Klasifikavimo rezultatai") {
   data$prediction <- prediction
-  data$correct <- validation_set$label == prediction
+  data$correct <- data$label == prediction
   
   data$correct_label <- ifelse(data$correct, "Teisingas spėjimas", "Neteisingas spėjimas")
   

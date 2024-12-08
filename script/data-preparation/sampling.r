@@ -12,7 +12,7 @@ split_data_into_sets <- function(data, label_colname = "label", ratio = 0.8) {
   ))
 }
 
-set.seed(1000) # reikalinga atkuriamumui
+set.seed(500) # reikalinga atkuriamumui
 
 # suzinom, kurios klases objektu yra maziau
 label_count <- count(ekg_data, label)
