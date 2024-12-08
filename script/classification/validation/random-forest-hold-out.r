@@ -19,8 +19,13 @@ apply_random_forest_hold_out <- function(data, iteration_num = 10, reduce = FALS
     temp_training_set <- results$bigger_set
     temp_validation_set <- results$smaller_set
     
-    temp_training_set <- normalize_data(temp_training_set)
-    temp_validation_set <- normalize_data(temp_validation_set)
+    normalization_result <- normalize_data(temp_training_set)
+    temp_training_set <- normalization_result$data
+    custom_min <- normalization_result$min
+    custom_max <- normalization_result$max
+    
+    normalization_result <- normalize_data(temp_validation_set, custom_min = custom_min, custom_max = custom_max)
+    temp_validation_set <- normalization_result$data
     
     if (reduce) {
       temp_training_set <- perform_umap(temp_training_set)

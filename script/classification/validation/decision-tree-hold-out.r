@@ -22,7 +22,6 @@ apply_decision_tree_hold_out <- function(data, iteration_num = 10, reduce = FALS
     custom_min <- normalization_result$min
     custom_max <- normalization_result$max
     
-    
     normalization_result <- normalize_data(temp_validation_set, custom_min = custom_min, custom_max = custom_max)
     temp_validation_set <- normalization_result$data
     
