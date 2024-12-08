@@ -1,35 +1,32 @@
 library("writexl")
 
 source("script/analysis/prediction-stats.r")
-source("script/validation/validation-funcs.r")
-source("script/classification/naive-bayes.r")
+source("script/classification/validation/validation-funcs.r")
+source("script/classification/logistic-regression.r")
 source("script/data-preparation/norm.r")
 source("script/dimension-reduction/umap.r")
 
-apply_naive_bayes_cross <- function(data, folds_num = 10, reduce = FALSE) {
+apply_logistic_regression_hold_out <- function(data, iteration_num = 10, reduce = FALSE) {
   accuracy_intermediate <- numeric()
   micro_stats_intermediate_neg <- data.frame()
   micro_stats_intermediate_pos <- data.frame()
   macro_stats_intermediate <- data.frame()
   
-  folds <- createFolds(data$label, folds_num, list = TRUE)
-  
-  for(idx in 1:folds_num) {
-    validation_indices <- folds[[idx]]
-    temp_validation_set <- data[validation_indices, ]
+  for(idx in 1:iteration_num) {
+    results <- split_data_into_sets(data)
+    temp_training_set <- results$bigger_set
+    temp_validation_set <- results$smaller_set
     
-    training_indices <- setdiff(seq_len(nrow(data)), validation_indices)
-    temp_training_set <- data[training_indices, ]
-    
-    temp_training_set <- normalize_data(temp_training_set)
-    temp_validation_set <- normalize_data(temp_validation_set)
+    normalization_result <- normalize_sets(temp_training_set, temp_validation_set)
+    temp_training_set <- normalization_result$main_set
+    temp_validation_set <- normalization_result$secondary_set
     
     if (reduce) {
       temp_training_set <- perform_umap(temp_training_set)
       temp_validation_set <- perform_umap(temp_validation_set)
     }
     
-    alg_results <- apply_naive_bayes(temp_training_set, temp_validation_set)
+    alg_results <- apply_logistic_regression(temp_training_set, temp_validation_set)
     predictions <- alg_results$prediction
     
     confusion_matrix <- get_confusion_matrix(temp_validation_set, predictions)
@@ -50,10 +47,10 @@ apply_naive_bayes_cross <- function(data, folds_num = 10, reduce = FALSE) {
 }
 
 # nesuspausta, pilna duomenu aibe
-cross_results <- apply_naive_bayes_cross(training_set)
+hold_out_results <- apply_logistic_regression_hold_out(training_set)
 
 # suspausta, atrinkta duomenu aibe
-cross_results_2d <- apply_naive_bayes_cross(training_set_2d, reduce = TRUE)
+hold_out_results_2d <- apply_logistic_regression_hold_out(training_set_2d, reduce = TRUE)
 
-cross_stats <- rbind(cross_results, cross_results_2d)
-write_xlsx(cross_stats, "output/naive_bayes_cross.xlsx")
+hold_out_stats <- rbind(hold_out_results, hold_out_results_2d)
+write_xlsx(hold_out_stats, "output/logistic_regression_hold_out.xlsx")
