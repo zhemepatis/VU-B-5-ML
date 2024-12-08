@@ -1,3 +1,21 @@
+normalize_sets <- function(main_set, secondary_set) {
+  normalization_result <- normalize_data(main_set)
+  main_set <- normalization_result$data
+  custom_min <- normalization_result$min
+  custom_max <- normalization_result$max
+  
+  normalization_result <- normalize_data(secondary_set, custom_min = custom_min, custom_max = custom_max)
+  secondary_set <- normalization_result$data
+  
+  result <- list(
+    main_set = main_set,
+    secondary_set = secondary_set
+  )
+  
+  return(result)
+}
+
+
 normalize_data <- function(data, label_colname = "label", custom_min = NULL, custom_max = NULL) {
   columns_to_normalize <- setdiff(colnames(data), label_colname)
   

@@ -17,13 +17,9 @@ apply_logistic_regression_hold_out <- function(data, iteration_num = 10, reduce 
     temp_training_set <- results$bigger_set
     temp_validation_set <- results$smaller_set
     
-    normalization_result <- normalize_data(temp_training_set)
-    temp_training_set <- normalization_result$data
-    custom_min <- normalization_result$min
-    custom_max <- normalization_result$max
-    
-    normalization_result <- normalize_data(temp_validation_set, custom_min = custom_min, custom_max = custom_max)
-    temp_validation_set <- normalization_result$data
+    normalization_result <- normalize_sets(temp_training_set, temp_validation_set)
+    temp_training_set <- normalization_result$main_set
+    temp_validation_set <- normalization_result$secondary_set
     
     if (reduce) {
       temp_training_set <- perform_umap(temp_training_set)
