@@ -29,11 +29,13 @@ get_prediction_macro_stats <- function(confusion_matrix) {
 }
 
 get_prediction_micro_stats <- function(confusion_matrix) {
+  label <- colnames(confusion_matrix)
   precision <- get_precision(confusion_matrix)
   recall <- get_recall(confusion_matrix)
   f1 <- get_f1(confusion_matrix)
   
   result <- data.frame(
+    label,
     precision,
     recall,
     f1
