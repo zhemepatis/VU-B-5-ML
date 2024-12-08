@@ -38,7 +38,7 @@ apply_decision_tree_hold_out <- function(data, iteration_num = 10, reduce = FALS
     macro_stats <- get_prediction_macro_stats(confusion_matrix)
     macro_stats_intermediate <- rbind(macro_stats_intermediate, macro_stats)
   }
-  
+  print(micro_stats_intermediate_pos)
   result_stats <- sum_up_stats(accuracy_intermediate, micro_stats_intermediate_neg, micro_stats_intermediate_pos, macro_stats_intermediate)
   return(result_stats)
 }
