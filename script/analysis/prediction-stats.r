@@ -76,5 +76,9 @@ get_f1 <- function(confusion_matrix) {
   precision <- get_precision(confusion_matrix)
   recall <- get_recall(confusion_matrix)
   
-  return(2 * precision * recall / (precision + recall))
+  f1 <- 2 * precision * recall / (precision + recall)
+  f1[is.nan(f1)] <- 0
+  f1[is.na(f1)] <- 0
+  
+  return(f1)
 }
