@@ -17,8 +17,15 @@ target_cols <- c("signal_mean", "signal_std", "R_val", "Q_pos", "Q_val", "T_pos"
 training_set_2d <- training_set[, target_cols]
 test_set_2d <- test_set[, target_cols]
 
+
+# optimalaus medziu skaiciaus pasirinkimas nesuspaustai pilnai duomenu aibei
+results_optimal <- find_optimal_ntree_with_plot(training_set, max_ntree = 1000, step = 10)
+optimal_ntree <- results_optimal$optimal_ntree
+optimal_oob_error <- results_optimal$optimal_oob_error
+
+
 # nesuspausta, pilna duomenu aibe
-results <- apply_random_forest(training_set, test_set)
+results <- apply_random_forest(training_set, test_set, ntree=180)
 prediction <- results$prediction
 prediction_prob <- results$prediction_prob
 
@@ -32,7 +39,14 @@ print(auc)
 training_set_2d <- perform_umap(training_set_2d, set_seed = TRUE)
 test_set_2d <- perform_umap(test_set_2d, set_seed = TRUE)
 
-results <- apply_random_forest(training_set_2d, test_set_2d)
+
+# optimalaus medziu skaiciaus pasirinkimas apribotai suspaustai duomenu aibei
+results_optimal <- find_optimal_ntree_with_plot(training_set_2d, max_ntree = 1000, step = 10)
+optimal_ntree <- results_optimal$optimal_ntree
+optimal_oob_error <- results_optimal$optimal_oob_error
+
+
+results <- apply_random_forest(training_set_2d, test_set_2d, ntree = 70)
 prediction <- results$prediction
 prediction_prob <- results$prediction_prob
 
