@@ -47,8 +47,9 @@ apply_naive_bayes_hold_out <- function(data, iteration_num = 10, reduce = FALSE)
 
 # nesuspausta, pilna duomenu aibe
 hold_out_results <- apply_naive_bayes_hold_out(training_set)
-write_xlsx(hold_out_results, "output/naive_bayes_hold_out_stats.xlsx")
 
 # suspausta, atrinkta duomenu aibe
 hold_out_results_2d <- apply_naive_bayes_hold_out(training_set_2d, reduce = TRUE)
-write_xlsx(hold_out_results_2d, "output/naive_bayes_hold_out_stats_2d.xlsx")
+
+hold_out_stats <- rbind(hold_out_results, hold_out_results_2d)
+write_xlsx(hold_out_stats, "output/naive_bayes_hold_out.xlsx")
