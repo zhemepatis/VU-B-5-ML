@@ -1,3 +1,5 @@
+library("writexl")
+
 source("script/analysis/prediction-stats.r")
 source("script/validation/validation-funcs.r")
 source("script/classification/decision-tree.r")
@@ -52,3 +54,6 @@ cross_results <- apply_decision_tree_cross(training_set)
 
 # suspausta, atrinkta duomenu aibe
 cross_results_2d <- apply_decision_tree_cross(training_set_2d, reduce = TRUE)
+
+cross_stats <- rbind(cross_results, cross_results_2d)
+write_xlsx(cross_stats, "output/decision_tree_cross.xlsx")
