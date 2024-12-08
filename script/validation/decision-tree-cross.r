@@ -1,6 +1,6 @@
-library(caret)
 source("script/analysis/prediction-stats.r")
 source("script/validation/validation-funcs.r")
+source("script/classification/decision-tree.r")
 source("script/data-preparation/norm.r")
 source("script/dimension-reduction/umap.r")
 
@@ -31,7 +31,7 @@ apply_decision_tree_cross <- function(data, folds_num = 10, reduce = FALSE) {
     predictions <- alg_results$prediction
 
     confusion_matrix <- get_confusion_matrix(temp_validation_set, predictions)
-    print(confusion_matrix)
+
     accuracy <- get_accuracy(confusion_matrix)
     accuracy_intermediate <- c(accuracy_intermediate, accuracy)
     

@@ -1,3 +1,5 @@
+library("writexl")  
+
 source("script/analysis/prediction-stats.r")
 source("script/validation/validation-funcs.r")
 source("script/classification/decision-tree.r")
@@ -45,6 +47,8 @@ apply_decision_tree_hold_out <- function(data, iteration_num = 10, reduce = FALS
 
 # nesuspausta, pilna duomenu aibe
 hold_out_results <- apply_decision_tree_hold_out(training_set)
+write_xlsx(hold_out_results, "output/decision_tree_hold_out_stats.xlsx")
 
 # suspausta, atrinkta duomenu aibe
 hold_out_results_2d <- apply_decision_tree_hold_out(training_set_2d, reduce = TRUE)
+write_xlsx(hold_out_results_2d, "output/decision_tree_hold_out_stats_2d.xlsx")
