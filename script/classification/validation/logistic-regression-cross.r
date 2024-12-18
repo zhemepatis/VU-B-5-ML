@@ -53,9 +53,9 @@ apply_logistic_regression_cross <- function(data, folds_num = 10, reduce = FALSE
 }
 
 # nesuspausta, pilna duomenu aibe
-cross_results <- apply_logistic_regression_cross(training_set, threshold = 0.5)
+cross_results <- apply_logistic_regression_cross(training_set, threshold = 0.5, maxit = 1000, epsilon = 1e-8)
 # suspausta, atrinkta duomenu aibe
-cross_results_2d <- apply_logistic_regression_cross(training_set_2d, reduce = TRUE, threshold = 0.55)
+cross_results_2d <- apply_logistic_regression_cross(training_set_2d, reduce = TRUE, threshold = 0.55, maxit = 1000, epsilon = 1e-8)
 
 cross_stats <- rbind(cross_results, cross_results_2d)
 write_xlsx(cross_stats, "output/logistic_regression_cross.xlsx")

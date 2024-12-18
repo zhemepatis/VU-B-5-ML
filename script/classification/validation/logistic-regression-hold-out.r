@@ -13,6 +13,7 @@ apply_logistic_regression_hold_out <- function(data, iteration_num = 10, reduce 
   macro_stats_intermediate <- data.frame()
   
   for(idx in 1:iteration_num) {
+    set.seed(idx * 1000)
     results <- split_data_into_sets(data)
     temp_training_set <- results$bigger_set
     temp_validation_set <- results$smaller_set
@@ -47,10 +48,10 @@ apply_logistic_regression_hold_out <- function(data, iteration_num = 10, reduce 
 }
 
 # nesuspausta, pilna duomenu aibe
-hold_out_results <- apply_logistic_regression_hold_out(training_set)
+hold_out_results <- apply_logistic_regression_hold_out(training_set, threshold = 0.5, maxit = 1000, epsilon = 1e-8)
 
 # suspausta, atrinkta duomenu aibe
-hold_out_results_2d <- apply_logistic_regression_hold_out(training_set_2d, reduce = TRUE, threshold = 0.5)
+hold_out_results_2d <- apply_logistic_regression_hold_out(training_set_2d, reduce = TRUE, threshold = 0.6, maxit = 1000, epsilon = 1e-8)
 
 hold_out_stats <- rbind(hold_out_results, hold_out_results_2d)
 write_xlsx(hold_out_stats, "output/logistic_regression_hold_out.xlsx")
