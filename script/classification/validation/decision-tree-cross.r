@@ -13,6 +13,7 @@ apply_decision_tree_cross <- function(data, folds_num = 10, reduce = FALSE) {
   micro_stats_intermediate_pos <- data.frame()
   macro_stats_intermediate <- data.frame()
   
+  set.seed(1000)
   folds <- createFolds(data$label, folds_num, list = TRUE)
   
   for(idx in 1:folds_num) {

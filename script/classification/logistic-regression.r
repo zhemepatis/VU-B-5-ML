@@ -1,4 +1,4 @@
-apply_logistic_regression <- function(training_set, validation_set) {
+apply_logistic_regression <- function(training_set, validation_set, threshold = 0.5) {
   training_set$label <- as.factor(training_set$label)
   validation_set$label <- as.factor(validation_set$label)
   
@@ -11,7 +11,7 @@ apply_logistic_regression <- function(training_set, validation_set) {
     "2" = prediction_prob_positive
   )
   
-  prediction <- ifelse(prediction_prob_positive > 0.5, "2", "0")
+  prediction <- ifelse(prediction_prob_positive > threshold, "2", "0")
   
   results <- list(
     prediction = prediction,
