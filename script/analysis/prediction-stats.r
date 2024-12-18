@@ -1,3 +1,27 @@
+library(caret)
+
+compute_metrics <- function(conf_matrix) {
+  stats <- conf_matrix$byClass # Extract per-class statistics
+  overall <- conf_matrix$overall # Extract overall metrics
+  
+  results <- list(
+    Accuracy = overall["Accuracy"],
+    Precision = stats["Pos Pred Value"],
+    Recall = stats["Sensitivity"],
+    F1 = 2 * (stats["Pos Pred Value"] * stats["Sensitivity"]) / 
+      (stats["Pos Pred Value"] + stats["Sensitivity"]),
+    Specificity = stats["Specificity"]
+  )
+  
+  print(sprintf("Accuracy: %.2f%%", results$Accuracy * 100))
+  print(sprintf("Precision: %.2f%%", results$Precision * 100))
+  print(sprintf("Recall: %.2f%%", results$Recall * 100))
+  print(sprintf("F1 Score: %.2f%%", results$F1 * 100))
+  print(sprintf("Specificity: %.2f%%", results$Specificity * 100))
+  
+  return(results)
+}
+
 get_stats <- function(validation_set, prediction) {
   confusion_matrix <- get_confusion_matrix(validation_set, prediction)
   print("Confusion matrix:")
