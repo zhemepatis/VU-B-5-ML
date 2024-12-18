@@ -1,4 +1,5 @@
 library("writexl")
+library(caret)
 
 source("script/analysis/prediction-stats.r")
 source("script/classification/validation/validation-funcs.r")
@@ -6,12 +7,13 @@ source("script/classification/logistic-regression.r")
 source("script/data-preparation/norm.r")
 source("script/dimension-reduction/umap.r")
 
-apply_logistic_regression_cross <- function(data, folds_num = 10, reduce = FALSE) {
+apply_logistic_regression_cross <- function(data, folds_num = 10, reduce = FALSE, threshold = 0.5) {
   accuracy_intermediate <- numeric()
   micro_stats_intermediate_neg <- data.frame()
   micro_stats_intermediate_pos <- data.frame()
   macro_stats_intermediate <- data.frame()
   
+  set.seed(1000)
   folds <- createFolds(data$label, folds_num, list = TRUE)
   
   for(idx in 1:folds_num) {
@@ -30,7 +32,7 @@ apply_logistic_regression_cross <- function(data, folds_num = 10, reduce = FALSE
       temp_validation_set <- perform_umap(temp_validation_set)
     }
     
-    alg_results <- apply_logistic_regression(temp_training_set, temp_validation_set)
+    alg_results <- apply_logistic_regression(temp_training_set, temp_validation_set, threshold = threshold)
     predictions <- alg_results$prediction
     
     confusion_matrix <- get_confusion_matrix(temp_validation_set, predictions)
@@ -52,9 +54,8 @@ apply_logistic_regression_cross <- function(data, folds_num = 10, reduce = FALSE
 
 # nesuspausta, pilna duomenu aibe
 cross_results <- apply_logistic_regression_cross(training_set)
-
 # suspausta, atrinkta duomenu aibe
-cross_results_2d <- apply_logistic_regression_cross(training_set_2d, reduce = TRUE)
+cross_results_2d <- apply_logistic_regression_cross(training_set_2d, reduce = TRUE, threshold = 0.2)
 
 cross_stats <- rbind(cross_results, cross_results_2d)
 write_xlsx(cross_stats, "output/logistic_regression_cross.xlsx")
