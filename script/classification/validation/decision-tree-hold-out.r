@@ -13,6 +13,7 @@ apply_decision_tree_hold_out <- function(data, iteration_num = 10, reduce = FALS
   macro_stats_intermediate <- data.frame()
   
   for(idx in 1:iteration_num) {
+    set.seed(idx * 1000)
     results <- split_data_into_sets(data)
     temp_training_set <- results$bigger_set
     temp_validation_set <- results$smaller_set
