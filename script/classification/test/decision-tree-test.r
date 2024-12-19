@@ -18,9 +18,14 @@ training_set_2d <- training_set[, target_cols]
 test_set_2d <- test_set[, target_cols]
 
 # nesuspausta, pilna duomenu aibe
-results <- apply_decision_tree(training_set, test_set)
+results <- apply_decision_tree(training_set, test_set, cp = 0.0005, maxdepth = 15, minsplit = 20, minbucket = 7)
 prediction <- results$prediction
 prediction_prob <- results$prediction_prob
+
+conf_matrix <- confusionMatrix(prediction, as.factor(test_set$label), positive = "2")
+print(conf_matrix)
+metrics_full <- compute_metrics(conf_matrix)
+
 
 test_set_reduced <- perform_umap(test_set, set_seed = TRUE)
 
@@ -32,9 +37,13 @@ print(auc)
 training_set_2d <- perform_umap(training_set_2d, set_seed = TRUE)
 test_set_2d <- perform_umap(test_set_2d, set_seed = TRUE)
 
-results <- apply_decision_tree(training_set_2d, test_set_2d)
+results <- apply_decision_tree(training_set_2d, test_set_2d, cp = 0.0005, maxdepth = 15, minsplit = 20, minbucket = 7)
 prediction <- results$prediction
 prediction_prob <- results$prediction_prob
+
+conf_matrix_reduced <- confusionMatrix(prediction, as.factor(test_set_2d$label), positive = "2")
+print(conf_matrix_reduced)
+metrics_reduced <- compute_metrics(conf_matrix_reduced)
 
 plot_predictions(test_set_2d, prediction, "Decision Tree klasifikavimo rezultatai apribotai suspaustai aibei")
 auc <- roc_curve(test_set_2d, prediction_prob, positive_class = "2", "Decision Tree ROC kreivė apribotai suspaustai aibei")
