@@ -34,7 +34,7 @@ test_set_2d <- test_set[, target_cols]
 # nesuspausta, pilna duomenu aibe
 results <- apply_random_forest(training_set, test_set, ntree=450, mtry = 2)
 prediction <- results$prediction
-prediction_prob <- results$prediction_prob
+
 
 conf_matrix <- confusionMatrix(prediction, as.factor(test_set$label), positive = "2")
 print(conf_matrix)
@@ -43,8 +43,8 @@ metrics_full <- compute_metrics(conf_matrix)
 test_set_reduced <- perform_umap(test_set, set_seed = TRUE)
 
 plot_predictions(test_set_reduced, prediction, "Random Forest klasifikavimo rezultatai pilnai aibei")
-auc <- roc_curve(test_set, prediction_prob, positive_class = "2", "Random Forest ROC kreivė pilnai aibei")
-print(auc)
+# auc <- roc_curve(test_set, prediction_prob, positive_class = "2", "Random Forest ROC kreivė pilnai aibei")
+# print(auc)
 
 # apirbota, suspausta duomenu aibe
 training_set_2d <- perform_umap(training_set_2d, set_seed = TRUE)
