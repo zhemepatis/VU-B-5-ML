@@ -3,7 +3,6 @@ library(rpart)
 
 source("script/analysis/prediction-plot.r")
 source("script/analysis/prediction-stats.r")
-source("script/analysis/roc-curve.r")
 source("script/classification/decision-tree.r")
 source("script/data-preparation/norm.r")
 source("script/dimension-reduction/umap.r")
@@ -18,24 +17,21 @@ training_set_2d <- training_set[, target_cols]
 test_set_2d <- test_set[, target_cols]
 
 # nesuspausta, pilna duomenu aibe
-results <- apply_decision_tree(training_set, test_set)
-prediction <- results$prediction
-prediction_prob <- results$prediction_prob
+dt_results <- apply_decision_tree(training_set, test_set)
+prediction <- dt_results$prediction
+prediction_prob <- dt_results$prediction_prob
 
 test_set_reduced <- perform_umap(test_set, set_seed = TRUE)
 
 plot_predictions(test_set_reduced, prediction, "Decision Tree klasifikavimo rezultatai pilnai aibei")
-auc <- roc_curve(test_set, prediction_prob, positive_class = "2", "Decision Tree ROC kreivė pilnai aibei")
-print(auc)
+
 
 # apirbota, suspausta duomenu aibe
 training_set_2d <- perform_umap(training_set_2d, set_seed = TRUE)
 test_set_2d <- perform_umap(test_set_2d, set_seed = TRUE)
 
-results <- apply_decision_tree(training_set_2d, test_set_2d)
-prediction <- results$prediction
-prediction_prob <- results$prediction_prob
+dt_results_2d <- apply_decision_tree(training_set_2d, test_set_2d)
+prediction <- dt_results_2d$prediction
+prediction_prob <- dt_results_2d$prediction_prob
 
 plot_predictions(test_set_2d, prediction, "Decision Tree klasifikavimo rezultatai apribotai suspaustai aibei")
-auc <- roc_curve(test_set_2d, prediction_prob, positive_class = "2", "Decision Tree ROC kreivė apribotai suspaustai aibei")
-print(auc)

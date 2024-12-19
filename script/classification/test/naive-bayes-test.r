@@ -3,7 +3,6 @@ library(rpart)
 
 source("script/analysis/prediction-plot.r")
 source("script/analysis/prediction-stats.r")
-source("script/analysis/roc-curve.r")
 source("script/classification/naive-bayes.r")
 source("script/data-preparation/norm.r")
 source("script/dimension-reduction/umap.r")

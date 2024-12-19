@@ -4,7 +4,6 @@ library(caret)
 
 source("script/analysis/prediction-plot.r")
 source("script/analysis/prediction-stats.r")
-source("script/analysis/roc-curve.r")
 source("script/classification/logistic-regression.r")
 source("script/data-preparation/norm.r")
 source("script/dimension-reduction/umap.r")
@@ -16,14 +15,14 @@ test_set <- normalization_result$secondary_set
 
 target_cols <- c("signal_mean", "signal_std", "R_val", "Q_pos", "Q_val", "T_pos", "P_pos", "wr_side", "label")
 training_set_2d <- training_set[, target_cols]
-test_set_2d <- test_set[, target_cols]
+lr_test_set <- test_set[, target_cols]
 
 
 # nesuspausta, pilna duomenu aibe
-results <- apply_logistic_regression(training_set, test_set, threshold = 0.5, maxit = 1000, epsilon = 1e-8)
-prediction <- results$prediction
-prediction <- factor(results$prediction, levels = levels(as.factor(test_set$label)))
-prediction_prob <- results$prediction_prob
+lr_results <- apply_logistic_regression(training_set, test_set, threshold = 0.5, maxit = 1000, epsilon = 1e-8)
+prediction <- lr_results$prediction
+prediction <- factor(lr_results$prediction, levels = levels(as.factor(test_set$label)))
+prediction_prob <- lr_results$prediction_prob
 
 conf_matrix <- confusionMatrix(prediction, as.factor(test_set$label), positive = "2")
 print(conf_matrix)
@@ -32,23 +31,19 @@ metrics <- compute_metrics(conf_matrix)
 test_set_reduced <- perform_umap(test_set, set_seed = TRUE)
 
 plot_predictions(test_set_reduced, prediction, "Logistinės regresijos klasifikavimo rezultatai pilnai aibei")
-auc <- roc_curve(test_set, prediction_prob, positive_class = "2", "Logistinės regresijos ROC kreivė pilnai aibei")
-print(auc)
 
 
 # apirbota, suspausta duomenu aibe
 training_set_2d <- perform_umap(training_set_2d, set_seed = TRUE)
-test_set_2d <- perform_umap(test_set_2d, set_seed = TRUE)
+lr_test_set_2d <- perform_umap(test_set_2d, set_seed = TRUE)
 
-results <- apply_logistic_regression(training_set_2d, test_set_2d, threshold = 0.5, maxit = 1000, epsilon = 1e-8)
-prediction <- results$prediction
-prediction <- factor(results$prediction, levels = levels(as.factor(test_set$label)))
-prediction_prob <- results$prediction_prob
+lr_results_2d <- apply_logistic_regression(training_set_2d, test_set_2d, threshold = 0.5, maxit = 1000, epsilon = 1e-8)
+prediction <- lr_results_2d$prediction
+prediction <- factor(lr_results_2d$prediction, levels = levels(as.factor(test_set$label)))
+prediction_prob <- lr_results_2d$prediction_prob
 
 conf_matrix <- confusionMatrix(prediction, as.factor(test_set_2d$label), positive = "2")
 print(conf_matrix)
 metrics <- compute_metrics(conf_matrix)
 
 plot_predictions(test_set_2d, prediction, "Logistinės regresijos klasifikavimo rezultatai apribotai suspaustai aibei")
-auc <- roc_curve(test_set_2d, prediction_prob, positive_class = "2", "Logistinės regresijos ROC kreivė apribotai suspaustai aibei")
-print(auc)
