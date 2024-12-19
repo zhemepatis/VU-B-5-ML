@@ -1,12 +1,17 @@
 library(rpart.plot)
 library(rpart)
 
-apply_decision_tree <- function(training_set, validation_set, plot_decision_tree = FALSE) {
+# 
+apply_decision_tree <- function(training_set, validation_set, plot_decision_tree = FALSE, cp = 0.01, maxdepth = 30, minsplit = 20, minbucket = round(minsplit / 3)) {
   training_set$label <- as.factor(training_set$label)
   validation_set$label <- as.factor(validation_set$label)
   
   # apmokom modeli naudojant pilna duomenu aibe
-  model <- rpart(label ~ ., data = training_set)
+  
+  # cia greiciausiai parametrai
+  model <- rpart(label ~ ., data = training_set, 
+                 control = rpart.control(cp = cp, maxdepth = maxdepth, 
+                                         minsplit = minsplit, minbucket = minbucket))
   if (plot_decision_tree) {
     rpart.plot(model, type = 1, extra = "auto")
   }
@@ -24,3 +29,4 @@ apply_decision_tree <- function(training_set, validation_set, plot_decision_tree
   
   return(results)
 }
+

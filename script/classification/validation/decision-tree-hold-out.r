@@ -6,7 +6,7 @@ source("script/classification/decision-tree.r")
 source("script/data-preparation/norm.r")
 source("script/dimension-reduction/umap.r")
 
-apply_decision_tree_hold_out <- function(data, iteration_num = 10, reduce = FALSE) {
+apply_decision_tree_hold_out <- function(data, iteration_num = 10, reduce = FALSE, cp = 0.0001, maxdepth = 20, minsplit = 20, minbucket = round(minsplit / 3)) {
   accuracy_intermediate <- numeric()
   micro_stats_intermediate_neg <- data.frame()
   micro_stats_intermediate_pos <- data.frame()
@@ -27,7 +27,7 @@ apply_decision_tree_hold_out <- function(data, iteration_num = 10, reduce = FALS
       temp_validation_set <- perform_umap(temp_validation_set)
     }
 
-    alg_results <- apply_decision_tree(temp_training_set, temp_validation_set)
+    alg_results <- apply_decision_tree(temp_training_set, temp_validation_set, cp = cp, maxdepth = maxdepth, minsplit = minsplit, minbucket = minbucket)
     predictions <- alg_results$prediction
 
     confusion_matrix <- get_confusion_matrix(temp_validation_set, predictions)
