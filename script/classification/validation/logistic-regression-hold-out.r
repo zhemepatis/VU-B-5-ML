@@ -23,13 +23,13 @@ apply_logistic_regression_hold_out <- function(data, iteration_num = 10, reduce 
     temp_validation_set <- normalization_result$secondary_set
     
     if (reduce) {
-      temp_training_set <- perform_umap(temp_training_set)
-      temp_validation_set <- perform_umap(temp_validation_set)
+      temp_training_set <- perform_umap(temp_training_set, set_seed = TRUE)
+      temp_validation_set <- perform_umap(temp_validation_set, set_seed = TRUE)
     }
     
     alg_results <- apply_logistic_regression(temp_training_set, temp_validation_set, threshold = threshold, maxit = maxit, epsilon = epsilon)
     predictions <- alg_results$prediction
-    
+
     confusion_matrix <- get_confusion_matrix(temp_validation_set, predictions)
     
     accuracy <- get_accuracy(confusion_matrix)
@@ -51,7 +51,7 @@ apply_logistic_regression_hold_out <- function(data, iteration_num = 10, reduce 
 hold_out_results <- apply_logistic_regression_hold_out(training_set, threshold = 0.5, maxit = 1000, epsilon = 1e-8)
 
 # suspausta, atrinkta duomenu aibe
-hold_out_results_2d <- apply_logistic_regression_hold_out(training_set_2d, reduce = TRUE, threshold = 0.6, maxit = 1000, epsilon = 1e-8)
+hold_out_results_2d <- apply_logistic_regression_hold_out(training_set_2d, reduce = TRUE, threshold = 0.5, maxit = 1000, epsilon = 1e-8)
 
 hold_out_stats <- rbind(hold_out_results, hold_out_results_2d)
 write_xlsx(hold_out_stats, "output/logistic_regression_hold_out.xlsx")
